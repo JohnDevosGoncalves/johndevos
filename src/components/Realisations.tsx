@@ -9,7 +9,7 @@ const projects = [
     category: "Application",
     title: "Seakite — Beyond the Sea",
     description:
-      "Conception de l'interface de pilotage complète et direction du développement de l'application pour ce projet de transport maritime innovant.",
+      "Conception de l\u2019interface de pilotage complète et direction du développement de l\u2019application pour ce projet de transport maritime innovant.",
     tags: ["UI/UX", "Direction technique", "Application"],
     url: "https://beyond-the-sea.com/seakite/",
   },
@@ -33,7 +33,7 @@ const projects = [
     category: "Branding",
     title: "Logos & identités de marque",
     description:
-      "Création d'identités visuelles pour Performa Expertise, Protomotech, Colibree Intergénération. Chaque logo est pensé pour être mémorable et cohérent avec l'activité.",
+      "Création d\u2019identités visuelles pour Performa Expertise, Protomotech, Colibree Intergénération. Chaque logo pensé pour être mémorable.",
     tags: ["Logo", "Branding", "Identité visuelle"],
     url: "https://www.performa-expertise.com/",
   },
@@ -55,9 +55,12 @@ export default function Realisations() {
     <section
       id="realisations"
       ref={sectionRef}
-      className="py-28 md:py-40 px-6 md:px-12 lg:px-20"
+      className="relative py-28 md:py-40 px-6 md:px-12 lg:px-20"
     >
-      <div className="max-w-5xl mx-auto">
+      {/* Subtle background shift */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.01] to-transparent pointer-events-none" />
+
+      <div className="relative max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -67,9 +70,9 @@ export default function Realisations() {
           <h2 className="font-heading text-3xl md:text-4xl font-bold mb-5">
             Quelques projets
           </h2>
-          <p className="text-muted text-lg leading-relaxed">
-            Des exemples concrets de collaborations récentes — chacune avec ses
-            enjeux et son contexte.
+          <p className="text-muted/70 text-lg leading-relaxed">
+            Des collaborations récentes — chacune avec ses enjeux et son
+            contexte.
           </p>
         </motion.div>
 
@@ -83,29 +86,27 @@ export default function Realisations() {
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.1 + i * 0.08 }}
-              className="group grid md:grid-cols-[140px_1fr_auto] gap-3 md:gap-8 items-start py-8 border-b border-white/[0.06] first:border-t first:border-white/[0.06] cursor-pointer"
+              className="group grid md:grid-cols-[140px_1fr_auto] gap-3 md:gap-8 items-baseline py-7 border-b border-white/[0.06] first:border-t first:border-white/[0.06] cursor-pointer hover:bg-white/[0.01] transition-colors duration-500 -mx-4 px-4 rounded-sm"
             >
-              <span className="text-xs text-muted/50 font-medium uppercase tracking-wider pt-1.5 hidden md:block">
+              <span className="text-xs text-muted/40 font-medium uppercase tracking-wider hidden md:block">
                 {project.category}
               </span>
 
               <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs text-muted/50 font-medium uppercase tracking-wider md:hidden">
-                    {project.category}
-                  </span>
-                </div>
-                <h3 className="font-heading text-lg md:text-xl font-semibold mb-2 group-hover:text-primary-light transition-colors duration-300">
+                <span className="text-xs text-muted/40 font-medium uppercase tracking-wider md:hidden mb-1 block">
+                  {project.category}
+                </span>
+                <h3 className="font-heading text-lg md:text-xl font-semibold mb-2 group-hover:text-foreground transition-colors duration-300">
                   {project.title}
                 </h3>
-                <p className="text-muted text-sm leading-relaxed mb-3 max-w-lg">
+                <p className="text-muted/60 text-sm leading-relaxed mb-3 max-w-lg">
                   {project.description}
                 </p>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5">
                   {project.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="text-xs px-2.5 py-1 rounded bg-white/[0.04] text-muted/60"
+                      className="text-[11px] px-2 py-0.5 rounded text-muted/40 border border-white/[0.04]"
                     >
                       {tag}
                     </span>
@@ -114,8 +115,8 @@ export default function Realisations() {
               </div>
 
               <ArrowUpRight
-                size={18}
-                className="text-muted/30 group-hover:text-primary-light group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300 mt-1.5 hidden md:block"
+                size={16}
+                className="text-muted/20 group-hover:text-primary-light group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300 hidden md:block"
               />
             </motion.a>
           ))}

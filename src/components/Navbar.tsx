@@ -27,22 +27,22 @@ export default function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
         scrolled
-          ? "bg-background/80 backdrop-blur-xl border-b border-white/[0.04]"
+          ? "bg-background/70 backdrop-blur-2xl border-b border-white/[0.03]"
           : "bg-transparent"
       }`}
     >
-      <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-20 py-4 flex items-center justify-between">
-        <a href="#hero" className="flex items-center gap-3">
+      <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-20 py-5 flex items-center justify-between">
+        <a href="#hero" className="flex items-center gap-3 group">
           <Image
             src="/logo.svg"
             alt="J.Devos"
-            width={32}
-            height={30}
-            className="h-8 w-auto"
+            width={28}
+            height={26}
+            className="h-7 w-auto opacity-80 group-hover:opacity-100 transition-opacity duration-300"
           />
-          <span className="font-heading text-lg font-bold tracking-tight text-foreground">
+          <span className="font-heading text-base font-semibold tracking-tight text-foreground/80 group-hover:text-foreground transition-colors duration-300">
             J.Devos
           </span>
         </a>
@@ -53,26 +53,26 @@ export default function Navbar() {
             <a
               key={link.href}
               href={link.href}
-              className="text-sm text-muted hover:text-foreground transition-colors duration-300"
+              className="link-hover text-[13px] text-muted/60 hover:text-foreground/80 transition-colors duration-300"
             >
               {link.label}
             </a>
           ))}
           <a
             href="#contact"
-            className="text-sm px-5 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition-colors"
+            className="text-[13px] text-foreground/70 hover:text-foreground transition-colors duration-300 ml-2"
           >
-            Contact
+            Contact &rarr;
           </a>
         </div>
 
         {/* Mobile toggle */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden text-foreground"
+          className="md:hidden text-foreground/70"
           aria-label="Menu"
         >
-          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+          {mobileOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
 
@@ -83,15 +83,16 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-background/95 backdrop-blur-xl border-b border-white/[0.04]"
+            transition={{ duration: 0.3 }}
+            className="md:hidden bg-background/95 backdrop-blur-2xl border-b border-white/[0.03]"
           >
-            <div className="px-6 py-6 flex flex-col gap-4">
+            <div className="px-6 py-8 flex flex-col gap-5">
               {navLinks.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="text-lg text-muted hover:text-foreground transition-colors"
+                  className="text-base text-muted/70 hover:text-foreground transition-colors"
                 >
                   {link.label}
                 </a>
@@ -99,9 +100,9 @@ export default function Navbar() {
               <a
                 href="#contact"
                 onClick={() => setMobileOpen(false)}
-                className="mt-2 text-center text-sm px-5 py-3 rounded-lg bg-primary text-white font-medium"
+                className="text-base text-foreground/70 mt-2"
               >
-                Contact
+                Contact &rarr;
               </a>
             </div>
           </motion.div>

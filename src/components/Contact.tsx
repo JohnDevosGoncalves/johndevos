@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useInView, motion } from "framer-motion";
-import { Send, CheckCircle, AlertCircle } from "lucide-react";
+import { ArrowRight, CheckCircle, AlertCircle } from "lucide-react";
 
 export default function Contact() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -54,31 +54,34 @@ export default function Contact() {
     <section
       id="contact"
       ref={sectionRef}
-      className="py-28 md:py-40 px-6 md:px-12 lg:px-20"
+      className="relative py-28 md:py-40 px-6 md:px-12 lg:px-20"
     >
+      {/* Subtle top accent line */}
+      <div className="absolute top-0 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+
       <div className="max-w-5xl mx-auto">
         <div className="grid md:grid-cols-[2fr_3fr] gap-12 md:gap-20">
-          {/* Left — text */}
           <motion.div
             initial={{ opacity: 0, y: 25 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.7 }}
+            className="md:sticky md:top-32 md:self-start"
           >
             <h2 className="font-heading text-3xl md:text-4xl font-bold mb-5">
-              Parlons de votre projet
+              Parlons de
+              <br />
+              votre projet
             </h2>
-            <p className="text-muted leading-relaxed mb-6">
+            <p className="text-muted/70 leading-relaxed mb-8">
               Chaque accompagnement est sur-mesure. Décrivez-moi votre projet et
               je reviens vers vous sous 24h.
             </p>
-            <p className="text-muted/60 text-sm leading-relaxed">
-              Premier échange gratuit et sans engagement.
-              <br />
-              Vos données restent confidentielles.
-            </p>
+            <div className="space-y-3 text-sm text-muted/40">
+              <p>Premier échange gratuit, sans engagement.</p>
+              <p>Vos données restent confidentielles.</p>
+            </div>
           </motion.div>
 
-          {/* Right — form */}
           <motion.div
             initial={{ opacity: 0, y: 25 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -88,18 +91,18 @@ export default function Contact() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="py-16 text-center"
+                className="py-20"
               >
-                <CheckCircle size={36} className="text-primary-light mx-auto mb-5" />
+                <CheckCircle size={28} className="text-primary-light/70 mb-5" />
                 <h3 className="font-heading text-xl font-semibold mb-2">
                   Message envoyé
                 </h3>
-                <p className="text-muted text-sm">
+                <p className="text-muted/60 text-sm">
                   Je reviens vers vous très rapidement.
                 </p>
               </motion.div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Honeypot */}
                 <div className="absolute -left-[9999px]" aria-hidden="true">
                   <label htmlFor="website">Website</label>
@@ -114,7 +117,7 @@ export default function Contact() {
 
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div>
-                    <label htmlFor="name" className="block text-sm text-muted/80 mb-1.5">
+                    <label htmlFor="name" className="block text-xs text-muted/50 uppercase tracking-wider mb-2">
                       Nom
                     </label>
                     <input
@@ -124,12 +127,12 @@ export default function Contact() {
                       required
                       minLength={2}
                       maxLength={200}
+                      className="w-full pb-3 bg-transparent border-b border-white/[0.08] text-foreground placeholder:text-muted/25 focus:outline-none focus:border-white/25 transition-colors text-sm"
                       placeholder="Votre nom"
-                      className="w-full px-4 py-3 rounded-lg bg-white/[0.03] border border-white/[0.08] text-foreground placeholder:text-muted/30 focus:outline-none focus:border-white/20 transition-colors"
                     />
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-sm text-muted/80 mb-1.5">
+                    <label htmlFor="email" className="block text-xs text-muted/50 uppercase tracking-wider mb-2">
                       Email
                     </label>
                     <input
@@ -138,28 +141,28 @@ export default function Contact() {
                       type="email"
                       required
                       maxLength={200}
+                      className="w-full pb-3 bg-transparent border-b border-white/[0.08] text-foreground placeholder:text-muted/25 focus:outline-none focus:border-white/25 transition-colors text-sm"
                       placeholder="vous@exemple.com"
-                      className="w-full px-4 py-3 rounded-lg bg-white/[0.03] border border-white/[0.08] text-foreground placeholder:text-muted/30 focus:outline-none focus:border-white/20 transition-colors"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="company" className="block text-sm text-muted/80 mb-1.5">
-                    Entreprise <span className="text-muted/30">(optionnel)</span>
+                  <label htmlFor="company" className="block text-xs text-muted/50 uppercase tracking-wider mb-2">
+                    Entreprise <span className="normal-case tracking-normal text-muted/30">(optionnel)</span>
                   </label>
                   <input
                     id="company"
                     name="company"
                     type="text"
                     maxLength={200}
+                    className="w-full pb-3 bg-transparent border-b border-white/[0.08] text-foreground placeholder:text-muted/25 focus:outline-none focus:border-white/25 transition-colors text-sm"
                     placeholder="Nom de votre entreprise"
-                    className="w-full px-4 py-3 rounded-lg bg-white/[0.03] border border-white/[0.08] text-foreground placeholder:text-muted/30 focus:outline-none focus:border-white/20 transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-sm text-muted/80 mb-1.5">
+                  <label htmlFor="message" className="block text-xs text-muted/50 uppercase tracking-wider mb-2">
                     Votre projet
                   </label>
                   <textarea
@@ -168,9 +171,9 @@ export default function Contact() {
                     required
                     minLength={10}
                     maxLength={5000}
-                    rows={5}
+                    rows={4}
+                    className="w-full pb-3 bg-transparent border-b border-white/[0.08] text-foreground placeholder:text-muted/25 focus:outline-none focus:border-white/25 transition-colors resize-none text-sm leading-relaxed"
                     placeholder="Décrivez brièvement votre projet, vos objectifs et votre calendrier..."
-                    className="w-full px-4 py-3 rounded-lg bg-white/[0.03] border border-white/[0.08] text-foreground placeholder:text-muted/30 focus:outline-none focus:border-white/20 transition-colors resize-none"
                   />
                 </div>
 
@@ -178,9 +181,9 @@ export default function Contact() {
                   <motion.div
                     initial={{ opacity: 0, y: -5 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="flex items-center gap-3 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm"
+                    className="flex items-center gap-3 py-3 text-red-400/80 text-sm"
                   >
-                    <AlertCircle size={16} className="shrink-0" />
+                    <AlertCircle size={14} className="shrink-0" />
                     {error}
                   </motion.div>
                 )}
@@ -188,14 +191,14 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex items-center gap-2.5 px-6 py-3 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
+                  className="group inline-flex items-center gap-2.5 text-sm font-medium text-foreground hover:text-primary-light transition-colors disabled:opacity-50 pt-2"
                 >
                   {loading ? (
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-white/20 border-t-white/70 rounded-full animate-spin" />
                   ) : (
                     <>
-                      Envoyer
-                      <Send size={15} />
+                      Envoyer le message
+                      <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-300" />
                     </>
                   )}
                 </button>
