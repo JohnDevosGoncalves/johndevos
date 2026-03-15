@@ -10,6 +10,7 @@ import Approche from "@/components/Approche";
 import Realisations from "@/components/Realisations";
 import Temoignages from "@/components/Temoignages";
 import Apropos from "@/components/Apropos";
+import Engagement from "@/components/Engagement";
 import Expertises from "@/components/Expertises";
 import Faq from "@/components/Faq";
 import Contact from "@/components/Contact";
@@ -32,6 +33,7 @@ export default function Home() {
         <Realisations />
         <Temoignages />
         <Apropos />
+        <Engagement />
         <Expertises />
         <Faq />
         <Contact />
