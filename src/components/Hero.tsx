@@ -17,7 +17,7 @@ function AbstractShape() {
       {/* Orbiting circles */}
       <motion.circle
         cx="200" cy="200" r="140"
-        stroke="rgba(59,130,246,0.08)"
+        stroke="rgba(75,141,248,0.14)"
         strokeWidth="0.5"
         initial={{ pathLength: 0, rotate: 0 }}
         animate={{ pathLength: 1, rotate: 360 }}
@@ -25,7 +25,7 @@ function AbstractShape() {
       />
       <motion.circle
         cx="200" cy="200" r="100"
-        stroke="rgba(6,182,212,0.06)"
+        stroke="rgba(34,201,219,0.10)"
         strokeWidth="0.5"
         initial={{ pathLength: 0, rotate: 0 }}
         animate={{ pathLength: 1, rotate: -360 }}
@@ -33,7 +33,7 @@ function AbstractShape() {
       />
       <motion.circle
         cx="200" cy="200" r="55"
-        stroke="rgba(139,92,246,0.05)"
+        stroke="rgba(157,113,247,0.08)"
         strokeWidth="0.5"
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
@@ -42,21 +42,21 @@ function AbstractShape() {
       {/* Small dots on orbits */}
       <motion.circle
         cx="340" cy="200" r="2.5"
-        fill="rgba(59,130,246,0.25)"
+        fill="rgba(75,141,248,0.35)"
         initial={{ opacity: 0 }}
         animate={{ opacity: [0, 1, 0.6] }}
         transition={{ duration: 2, delay: 2 }}
       />
       <motion.circle
         cx="200" cy="100" r="2"
-        fill="rgba(6,182,212,0.2)"
+        fill="rgba(34,201,219,0.30)"
         initial={{ opacity: 0 }}
         animate={{ opacity: [0, 1, 0.5] }}
         transition={{ duration: 2, delay: 2.3 }}
       />
       <motion.circle
         cx="145" cy="210" r="1.5"
-        fill="rgba(139,92,246,0.2)"
+        fill="rgba(157,113,247,0.30)"
         initial={{ opacity: 0 }}
         animate={{ opacity: [0, 1, 0.4] }}
         transition={{ duration: 2, delay: 2.6 }}
@@ -64,7 +64,7 @@ function AbstractShape() {
       {/* Crossing lines */}
       <motion.line
         x1="80" y1="320" x2="320" y2="80"
-        stroke="rgba(255,255,255,0.025)"
+        stroke="rgba(255,255,255,0.05)"
         strokeWidth="0.5"
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
@@ -72,7 +72,7 @@ function AbstractShape() {
       />
       <motion.line
         x1="60" y1="200" x2="340" y2="200"
-        stroke="rgba(255,255,255,0.015)"
+        stroke="rgba(255,255,255,0.035)"
         strokeWidth="0.5"
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
@@ -130,13 +130,13 @@ export default function Hero() {
       {/* Abstract geometric illustration — right side, parallax */}
       <div
         ref={shapeRef}
-        className="absolute right-[-5%] md:right-[3%] top-[15%] md:top-[10%] w-[300px] h-[300px] md:w-[450px] md:h-[450px] lg:w-[500px] lg:h-[500px] pointer-events-none select-none opacity-70"
+        className="absolute right-[-5%] md:right-[3%] top-[15%] md:top-[10%] w-[300px] h-[300px] md:w-[450px] md:h-[450px] lg:w-[500px] lg:h-[500px] pointer-events-none select-none opacity-85"
       >
         <AbstractShape />
       </div>
 
       {/* Subtle horizon line */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.10] to-transparent" />
 
       <div className="hero-content relative z-10 px-6 md:px-12 lg:px-20 max-w-5xl">
         <motion.p

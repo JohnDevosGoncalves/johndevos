@@ -55,7 +55,7 @@ export default function Temoignages() {
       <span
         ref={quoteMarkRef}
         aria-hidden="true"
-        className="absolute top-16 right-[5%] md:right-[12%] font-heading text-[16rem] md:text-[22rem] leading-none text-white/[0.02] select-none pointer-events-none"
+        className="absolute top-16 right-[5%] md:right-[12%] font-heading text-[16rem] md:text-[22rem] leading-none text-white/[0.04] select-none pointer-events-none"
       >
         &ldquo;
       </span>
@@ -79,7 +79,7 @@ export default function Temoignages() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.15 }}
           >
-            <blockquote className="border-l border-primary-light/30 pl-6 md:pl-10">
+            <blockquote className="border-l-2 border-primary-light/40 pl-6 md:pl-10">
               <p className="text-lg md:text-2xl text-foreground/85 leading-relaxed mb-6 max-w-3xl font-light tracking-[-0.01em]">
                 &ldquo;{testimonials[0].quote}&rdquo;
               </p>

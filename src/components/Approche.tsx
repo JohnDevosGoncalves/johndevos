@@ -97,13 +97,13 @@ export default function Approche() {
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.15 + i * 0.15 }}
-              className="step-row group relative grid md:grid-cols-[120px_1fr] gap-4 md:gap-10 py-12 border-t border-white/[0.06] first:border-t-0"
+              className="step-row group relative grid md:grid-cols-[120px_1fr] gap-4 md:gap-10 py-12 border-t border-white/[0.10] first:border-t-0"
             >
               {/* Large parallax number */}
               <span
                 ref={(el) => { numbersRef.current[i] = el; }}
                 aria-hidden="true"
-                className="font-heading text-6xl md:text-8xl font-bold text-white/[0.03] leading-none select-none md:text-right"
+                className="font-heading text-6xl md:text-8xl font-bold text-white/[0.06] leading-none select-none md:text-right"
               >
                 {step.num}
               </span>

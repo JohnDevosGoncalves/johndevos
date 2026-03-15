@@ -69,7 +69,7 @@ export default function Engagement() {
                 initial={{ opacity: 0 }}
                 animate={isInView ? { opacity: 1 } : {}}
                 transition={{ duration: 0.4, delay: 0.3 + i * 0.1 }}
-                className="group py-5 border-b border-white/[0.06] first:border-t first:border-white/[0.06] hover:bg-white/[0.01] -mx-3 px-3 rounded-sm transition-colors duration-500"
+                className="group py-5 border-b border-white/[0.10] first:border-t first:border-white/[0.10] hover:bg-white/[0.03] -mx-3 px-3 rounded-sm transition-colors duration-500"
               >
                 <h4 className="text-sm font-medium text-foreground/80 mb-1 group-hover:text-foreground/90 transition-colors duration-500">
                   {item.title}

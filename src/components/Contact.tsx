@@ -57,7 +57,7 @@ export default function Contact() {
       className="relative py-28 md:py-40 px-6 md:px-12 lg:px-20"
     >
       {/* Subtle top accent line */}
-      <div className="absolute top-0 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
+      <div className="absolute top-0 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-white/[0.10] to-transparent" />
 
       <div className="max-w-5xl mx-auto">
         <div className="grid md:grid-cols-[2fr_3fr] gap-12 md:gap-20">
@@ -128,7 +128,7 @@ export default function Contact() {
                       aria-required="true"
                       minLength={2}
                       maxLength={200}
-                      className="w-full pb-3 bg-transparent border-b border-white/[0.08] text-foreground placeholder:text-muted/40 focus:outline-none focus:border-white/30 transition-colors text-sm"
+                      className="w-full pb-3 bg-transparent border-b border-white/[0.12] text-foreground placeholder:text-muted/40 focus:outline-none focus:border-white/30 transition-colors text-sm"
                       placeholder="Votre nom"
                     />
                   </div>
@@ -143,7 +143,7 @@ export default function Contact() {
                       required
                       aria-required="true"
                       maxLength={200}
-                      className="w-full pb-3 bg-transparent border-b border-white/[0.08] text-foreground placeholder:text-muted/40 focus:outline-none focus:border-white/30 transition-colors text-sm"
+                      className="w-full pb-3 bg-transparent border-b border-white/[0.12] text-foreground placeholder:text-muted/40 focus:outline-none focus:border-white/30 transition-colors text-sm"
                       placeholder="vous@exemple.com"
                     />
                   </div>
@@ -158,7 +158,7 @@ export default function Contact() {
                     name="company"
                     type="text"
                     maxLength={200}
-                    className="w-full pb-3 bg-transparent border-b border-white/[0.08] text-foreground placeholder:text-muted/40 focus:outline-none focus:border-white/30 transition-colors text-sm"
+                    className="w-full pb-3 bg-transparent border-b border-white/[0.12] text-foreground placeholder:text-muted/40 focus:outline-none focus:border-white/30 transition-colors text-sm"
                     placeholder="Nom de votre entreprise"
                   />
                 </div>
@@ -175,7 +175,7 @@ export default function Contact() {
                     minLength={10}
                     maxLength={5000}
                     rows={4}
-                    className="w-full pb-3 bg-transparent border-b border-white/[0.08] text-foreground placeholder:text-muted/40 focus:outline-none focus:border-white/30 transition-colors resize-none text-sm leading-relaxed"
+                    className="w-full pb-3 bg-transparent border-b border-white/[0.12] text-foreground placeholder:text-muted/40 focus:outline-none focus:border-white/30 transition-colors resize-none text-sm leading-relaxed"
                     placeholder="Décrivez brièvement votre projet, vos objectifs et votre calendrier..."
                   />
                 </div>

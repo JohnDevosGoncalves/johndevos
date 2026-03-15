@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/[0.04] py-12 px-6 md:px-12 lg:px-20">
+    <footer className="border-t border-white/[0.08] py-12 px-6 md:px-12 lg:px-20">
       <div className="max-w-5xl mx-auto">
         <div className="flex flex-col md:flex-row items-start justify-between gap-8 mb-10">
           <div>
@@ -52,7 +52,7 @@ export default function Footer() {
           </nav>
         </div>
 
-        <div className="pt-6 border-t border-white/[0.04] flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="pt-6 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-muted/60">
             &copy; {new Date().getFullYear()} John Devos
           </p>

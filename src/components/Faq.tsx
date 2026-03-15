@@ -42,7 +42,7 @@ function FaqItem({
   onToggle: () => void;
 }) {
   return (
-    <div className="border-b border-white/[0.06]">
+    <div className="border-b border-white/[0.10]">
       <button
         onClick={onToggle}
         aria-expanded={isOpen}

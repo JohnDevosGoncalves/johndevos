@@ -57,7 +57,7 @@ export default function Expertises() {
       ref={sectionRef}
       className="relative py-28 md:py-40 px-6 md:px-12 lg:px-20"
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.008] to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.02] to-transparent pointer-events-none" />
 
       <div className="relative max-w-5xl mx-auto">
         <motion.div
@@ -91,7 +91,7 @@ export default function Expertises() {
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.1 + i * 0.07 }}
-              className="group py-7 border-b border-white/[0.06] hover:bg-white/[0.01] -mx-4 px-4 rounded-sm transition-colors duration-500"
+              className="group py-7 border-b border-white/[0.10] hover:bg-white/[0.03] -mx-4 px-4 rounded-sm transition-colors duration-500"
             >
               <div className="flex items-center gap-2.5 mb-2">
                 <span className="text-primary-light/60 group-hover:text-primary-light/80 transition-colors duration-500" aria-hidden="true">

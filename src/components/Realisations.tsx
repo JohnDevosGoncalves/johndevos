@@ -124,7 +124,7 @@ export default function Realisations() {
       ref={sectionRef}
       className="relative py-28 md:py-40 px-6 md:px-12 lg:px-20"
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.01] to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.02] to-transparent pointer-events-none" />
 
       <div className="relative max-w-5xl mx-auto">
         <motion.div
@@ -153,7 +153,7 @@ export default function Realisations() {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.1 + i * 0.08 }}
               aria-label={`${project.title} — ${project.category}`}
-              className="group grid grid-cols-[1fr] md:grid-cols-[80px_140px_1fr_auto] gap-3 md:gap-6 items-center py-7 border-b border-white/[0.06] first:border-t first:border-white/[0.06] cursor-pointer hover:bg-white/[0.01] transition-colors duration-500 -mx-4 px-4 rounded-sm"
+              className="group grid grid-cols-[1fr] md:grid-cols-[80px_140px_1fr_auto] gap-3 md:gap-6 items-center py-7 border-b border-white/[0.10] first:border-t first:border-white/[0.10] cursor-pointer hover:bg-white/[0.03] transition-colors duration-500 -mx-4 px-4 rounded-sm"
             >
               {/* Small abstract visual */}
               <div className="hidden md:block w-[80px] h-[60px] text-primary-light/80 group-hover:text-primary-light transition-colors duration-500" aria-hidden="true">
@@ -178,7 +178,7 @@ export default function Realisations() {
                   {project.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="text-[11px] px-2 py-0.5 rounded text-muted/60 border border-white/[0.06]"
+                      className="text-[11px] px-2 py-0.5 rounded text-muted/60 border border-white/[0.10]"
                     >
                       {tag}
                     </span>
