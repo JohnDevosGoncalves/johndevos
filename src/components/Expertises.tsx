@@ -57,7 +57,7 @@ export default function Expertises() {
       ref={sectionRef}
       className="relative py-28 md:py-40 px-6 md:px-12 lg:px-20"
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.02] to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.03] to-transparent pointer-events-none" />
 
       <div className="relative max-w-5xl mx-auto">
         <motion.div
@@ -70,14 +70,14 @@ export default function Expertises() {
             <h2 className="font-heading text-3xl md:text-4xl font-bold mb-5">
               Ce sur quoi je peux vous aider
             </h2>
-            <p className="text-muted/70 text-lg leading-relaxed">
+            <p className="text-muted/80 text-lg leading-relaxed">
               Chaque projet est différent. Je mobilise les compétences dont vous
               avez besoin, ni plus ni moins.
             </p>
           </div>
           <a
             href="#contact"
-            className="group inline-flex items-center gap-2 text-sm text-muted/70 hover:text-foreground/80 transition-colors duration-300 shrink-0"
+            className="group inline-flex items-center gap-2 text-sm text-muted/80 hover:text-foreground/90 transition-colors duration-300 shrink-0"
           >
             Discuter de votre besoin
             <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-300" />
@@ -91,7 +91,7 @@ export default function Expertises() {
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.1 + i * 0.07 }}
-              className="group py-7 border-b border-white/[0.10] hover:bg-white/[0.03] -mx-4 px-4 rounded-sm transition-colors duration-500"
+              className="group py-7 border-b border-white/[0.12] hover:bg-white/[0.04] -mx-4 px-4 rounded-sm transition-colors duration-500"
             >
               <div className="flex items-center gap-2.5 mb-2">
                 <span className="text-primary-light/60 group-hover:text-primary-light/80 transition-colors duration-500" aria-hidden="true">
@@ -101,7 +101,7 @@ export default function Expertises() {
                   {item.title}
                 </h3>
               </div>
-              <p className="text-muted/70 text-sm leading-relaxed pl-[26px]">
+              <p className="text-muted/80 text-sm leading-relaxed pl-[26px]">
                 {item.description}
               </p>
             </motion.div>

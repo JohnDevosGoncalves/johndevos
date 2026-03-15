@@ -57,7 +57,7 @@ export default function Contact() {
       className="relative py-28 md:py-40 px-6 md:px-12 lg:px-20"
     >
       {/* Subtle top accent line */}
-      <div className="absolute top-0 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-white/[0.10] to-transparent" />
+      <div className="absolute top-0 left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-white/[0.15] to-transparent" />
 
       <div className="max-w-5xl mx-auto">
         <div className="grid md:grid-cols-[2fr_3fr] gap-12 md:gap-20">
@@ -72,11 +72,11 @@ export default function Contact() {
               <br />
               votre projet
             </h2>
-            <p className="text-muted/70 leading-relaxed mb-8">
+            <p className="text-muted/80 leading-relaxed mb-8">
               Chaque accompagnement est sur-mesure. Décrivez-moi votre projet et
               je reviens vers vous sous 24h.
             </p>
-            <div className="space-y-3 text-sm text-muted/60">
+            <div className="space-y-3 text-sm text-muted/70">
               <p>Premier échange gratuit, sans engagement.</p>
               <p>Vos données restent confidentielles.</p>
             </div>
@@ -93,11 +93,11 @@ export default function Contact() {
                 animate={{ opacity: 1 }}
                 className="py-20"
               >
-                <CheckCircle size={28} className="text-primary-light/70 mb-5" />
+                <CheckCircle size={28} className="text-primary-light/80 mb-5" />
                 <h3 className="font-heading text-xl font-semibold mb-2">
                   Message envoyé
                 </h3>
-                <p className="text-muted/70 text-sm">
+                <p className="text-muted/80 text-sm">
                   Je reviens vers vous très rapidement.
                 </p>
               </motion.div>
@@ -117,7 +117,7 @@ export default function Contact() {
 
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div>
-                    <label htmlFor="name" className="block text-xs text-muted/70 uppercase tracking-wider mb-2">
+                    <label htmlFor="name" className="block text-xs text-muted/80 uppercase tracking-wider mb-2">
                       Nom
                     </label>
                     <input
@@ -128,12 +128,12 @@ export default function Contact() {
                       aria-required="true"
                       minLength={2}
                       maxLength={200}
-                      className="w-full pb-3 bg-transparent border-b border-white/[0.12] text-foreground placeholder:text-muted/40 focus:outline-none focus:border-white/30 transition-colors text-sm"
+                      className="w-full pb-3 bg-transparent border-b border-white/[0.15] text-foreground placeholder:text-muted/40 focus:outline-none focus:border-white/30 transition-colors text-sm"
                       placeholder="Votre nom"
                     />
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-xs text-muted/70 uppercase tracking-wider mb-2">
+                    <label htmlFor="email" className="block text-xs text-muted/80 uppercase tracking-wider mb-2">
                       Email
                     </label>
                     <input
@@ -143,14 +143,14 @@ export default function Contact() {
                       required
                       aria-required="true"
                       maxLength={200}
-                      className="w-full pb-3 bg-transparent border-b border-white/[0.12] text-foreground placeholder:text-muted/40 focus:outline-none focus:border-white/30 transition-colors text-sm"
+                      className="w-full pb-3 bg-transparent border-b border-white/[0.15] text-foreground placeholder:text-muted/40 focus:outline-none focus:border-white/30 transition-colors text-sm"
                       placeholder="vous@exemple.com"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="company" className="block text-xs text-muted/70 uppercase tracking-wider mb-2">
+                  <label htmlFor="company" className="block text-xs text-muted/80 uppercase tracking-wider mb-2">
                     Entreprise <span className="normal-case tracking-normal text-muted/50">(optionnel)</span>
                   </label>
                   <input
@@ -158,13 +158,13 @@ export default function Contact() {
                     name="company"
                     type="text"
                     maxLength={200}
-                    className="w-full pb-3 bg-transparent border-b border-white/[0.12] text-foreground placeholder:text-muted/40 focus:outline-none focus:border-white/30 transition-colors text-sm"
+                    className="w-full pb-3 bg-transparent border-b border-white/[0.15] text-foreground placeholder:text-muted/40 focus:outline-none focus:border-white/30 transition-colors text-sm"
                     placeholder="Nom de votre entreprise"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-xs text-muted/70 uppercase tracking-wider mb-2">
+                  <label htmlFor="message" className="block text-xs text-muted/80 uppercase tracking-wider mb-2">
                     Votre projet
                   </label>
                   <textarea
@@ -175,7 +175,7 @@ export default function Contact() {
                     minLength={10}
                     maxLength={5000}
                     rows={4}
-                    className="w-full pb-3 bg-transparent border-b border-white/[0.12] text-foreground placeholder:text-muted/40 focus:outline-none focus:border-white/30 transition-colors resize-none text-sm leading-relaxed"
+                    className="w-full pb-3 bg-transparent border-b border-white/[0.15] text-foreground placeholder:text-muted/40 focus:outline-none focus:border-white/30 transition-colors resize-none text-sm leading-relaxed"
                     placeholder="Décrivez brièvement votre projet, vos objectifs et votre calendrier..."
                   />
                 </div>

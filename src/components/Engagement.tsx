@@ -20,14 +20,14 @@ export default function Engagement() {
               Engagement associatif
             </h2>
 
-            <div className="space-y-5 text-muted/70 leading-[1.8]">
+            <div className="space-y-5 text-muted/80 leading-[1.8]">
               <p>
                 Depuis 2016, je suis partenaire de{" "}
                 <a
                   href="https://www.instagram.com/asso.partage/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-foreground/80 underline underline-offset-4 decoration-white/25 hover:decoration-white/45 transition-colors"
+                  className="text-foreground/90 underline underline-offset-4 decoration-white/25 hover:decoration-white/45 transition-colors"
                 >
                   l&apos;Association Partage
                 </a>
@@ -69,12 +69,12 @@ export default function Engagement() {
                 initial={{ opacity: 0 }}
                 animate={isInView ? { opacity: 1 } : {}}
                 transition={{ duration: 0.4, delay: 0.3 + i * 0.1 }}
-                className="group py-5 border-b border-white/[0.10] first:border-t first:border-white/[0.10] hover:bg-white/[0.03] -mx-3 px-3 rounded-sm transition-colors duration-500"
+                className="group py-5 border-b border-white/[0.12] first:border-t first:border-white/[0.12] hover:bg-white/[0.04] -mx-3 px-3 rounded-sm transition-colors duration-500"
               >
-                <h4 className="text-sm font-medium text-foreground/80 mb-1 group-hover:text-foreground/90 transition-colors duration-500">
+                <h4 className="text-sm font-medium text-foreground/90 mb-1 group-hover:text-foreground/90 transition-colors duration-500">
                   {item.title}
                 </h4>
-                <p className="text-sm text-muted/70 leading-relaxed">
+                <p className="text-sm text-muted/80 leading-relaxed">
                   {item.text}
                 </p>
               </motion.div>

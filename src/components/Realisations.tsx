@@ -124,7 +124,7 @@ export default function Realisations() {
       ref={sectionRef}
       className="relative py-28 md:py-40 px-6 md:px-12 lg:px-20"
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.02] to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.03] to-transparent pointer-events-none" />
 
       <div className="relative max-w-5xl mx-auto">
         <motion.div
@@ -136,7 +136,7 @@ export default function Realisations() {
           <h2 className="font-heading text-3xl md:text-4xl font-bold mb-5">
             Quelques projets
           </h2>
-          <p className="text-muted/70 text-lg leading-relaxed">
+          <p className="text-muted/80 text-lg leading-relaxed">
             Des collaborations récentes — chacune avec ses enjeux et son
             contexte.
           </p>
@@ -153,32 +153,32 @@ export default function Realisations() {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.1 + i * 0.08 }}
               aria-label={`${project.title} — ${project.category}`}
-              className="group grid grid-cols-[1fr] md:grid-cols-[80px_140px_1fr_auto] gap-3 md:gap-6 items-center py-7 border-b border-white/[0.10] first:border-t first:border-white/[0.10] cursor-pointer hover:bg-white/[0.03] transition-colors duration-500 -mx-4 px-4 rounded-sm"
+              className="group grid grid-cols-[1fr] md:grid-cols-[80px_140px_1fr_auto] gap-3 md:gap-6 items-center py-7 border-b border-white/[0.12] first:border-t first:border-white/[0.12] cursor-pointer hover:bg-white/[0.04] transition-colors duration-500 -mx-4 px-4 rounded-sm"
             >
               {/* Small abstract visual */}
               <div className="hidden md:block w-[80px] h-[60px] text-primary-light/80 group-hover:text-primary-light transition-colors duration-500" aria-hidden="true">
                 <ProjectVisual type={project.visual} />
               </div>
 
-              <span className="text-xs text-muted/60 font-medium uppercase tracking-wider hidden md:block">
+              <span className="text-xs text-muted/70 font-medium uppercase tracking-wider hidden md:block">
                 {project.category}
               </span>
 
               <div>
-                <span className="text-xs text-muted/60 font-medium uppercase tracking-wider md:hidden mb-1 block">
+                <span className="text-xs text-muted/70 font-medium uppercase tracking-wider md:hidden mb-1 block">
                   {project.category}
                 </span>
                 <h3 className="font-heading text-lg md:text-xl font-semibold mb-2 group-hover:text-foreground transition-colors duration-300">
                   {project.title}
                 </h3>
-                <p className="text-muted/70 text-sm leading-relaxed mb-3 max-w-lg">
+                <p className="text-muted/80 text-sm leading-relaxed mb-3 max-w-lg">
                   {project.description}
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {project.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="text-[11px] px-2 py-0.5 rounded text-muted/60 border border-white/[0.10]"
+                      className="text-[11px] px-2 py-0.5 rounded text-muted/70 border border-white/[0.12]"
                     >
                       {tag}
                     </span>

@@ -55,7 +55,7 @@ export default function Temoignages() {
       <span
         ref={quoteMarkRef}
         aria-hidden="true"
-        className="absolute top-16 right-[5%] md:right-[12%] font-heading text-[16rem] md:text-[22rem] leading-none text-white/[0.04] select-none pointer-events-none"
+        className="absolute top-16 right-[5%] md:right-[12%] font-heading text-[16rem] md:text-[22rem] leading-none text-white/[0.06] select-none pointer-events-none"
       >
         &ldquo;
       </span>
@@ -79,12 +79,12 @@ export default function Temoignages() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.15 }}
           >
-            <blockquote className="border-l-2 border-primary-light/40 pl-6 md:pl-10">
+            <blockquote className="border-l-2 border-primary-light/50 pl-6 md:pl-10">
               <p className="text-lg md:text-2xl text-foreground/85 leading-relaxed mb-6 max-w-3xl font-light tracking-[-0.01em]">
                 &ldquo;{testimonials[0].quote}&rdquo;
               </p>
-              <footer className="text-sm text-muted/70">
-                <span className="text-foreground/80 font-medium">{testimonials[0].name}</span>
+              <footer className="text-sm text-muted/80">
+                <span className="text-foreground/90 font-medium">{testimonials[0].name}</span>
                 <span className="mx-2 text-white/30" aria-hidden="true">—</span>
                 {testimonials[0].role}
               </footer>
@@ -101,13 +101,13 @@ export default function Temoignages() {
                 transition={{ duration: 0.6, delay: 0.35 + i * 0.12 }}
               >
                 <blockquote>
-                  <p className="text-muted/70 leading-relaxed mb-4 text-[15px]">
+                  <p className="text-muted/80 leading-relaxed mb-4 text-[15px]">
                     &ldquo;{t.quote}&rdquo;
                   </p>
                   <footer className="text-sm">
-                    <span className="text-foreground/80 font-medium">{t.name}</span>
+                    <span className="text-foreground/90 font-medium">{t.name}</span>
                     <span className="mx-2 text-white/30" aria-hidden="true">—</span>
-                    <span className="text-muted/70">{t.role}</span>
+                    <span className="text-muted/80">{t.role}</span>
                   </footer>
                 </blockquote>
               </motion.div>

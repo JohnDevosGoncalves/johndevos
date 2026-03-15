@@ -42,7 +42,7 @@ function FaqItem({
   onToggle: () => void;
 }) {
   return (
-    <div className="border-b border-white/[0.10]">
+    <div className="border-b border-white/[0.12]">
       <button
         onClick={onToggle}
         aria-expanded={isOpen}
@@ -57,7 +57,7 @@ function FaqItem({
           className="shrink-0 mt-1"
           aria-hidden="true"
         >
-          <Plus size={16} className="text-muted/60" />
+          <Plus size={16} className="text-muted/70" />
         </motion.div>
       </button>
       <AnimatePresence>

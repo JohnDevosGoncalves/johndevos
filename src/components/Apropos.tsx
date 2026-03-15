@@ -48,7 +48,7 @@ export default function Apropos() {
         className="absolute left-[50%] md:left-[60%] top-[10%] pointer-events-none select-none"
         aria-hidden="true"
       >
-        <span className="font-heading text-[14rem] md:text-[20rem] font-bold text-white/[0.035] leading-none block">
+        <span className="font-heading text-[14rem] md:text-[20rem] font-bold text-white/[0.05] leading-none block">
           10
         </span>
       </div>
@@ -70,7 +70,7 @@ export default function Apropos() {
             initial={{ opacity: 0, y: 25 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.7, delay: 0.15 }}
-            className="space-y-5 text-muted/70 leading-[1.8]"
+            className="space-y-5 text-muted/80 leading-[1.8]"
           >
             <p>
               J&apos;ai commencé il y a une dizaine d&apos;années, comme
@@ -116,12 +116,12 @@ export default function Apropos() {
                   initial={{ opacity: 0 }}
                   animate={isInView ? { opacity: 1 } : {}}
                   transition={{ duration: 0.4, delay: 0.4 + i * 0.1 }}
-                  className="group flex gap-5 py-4 border-b border-white/[0.10] first:border-t first:border-white/[0.10] hover:bg-white/[0.03] -mx-3 px-3 rounded-sm transition-colors duration-500"
+                  className="group flex gap-5 py-4 border-b border-white/[0.12] first:border-t first:border-white/[0.12] hover:bg-white/[0.04] -mx-3 px-3 rounded-sm transition-colors duration-500"
                 >
-                  <span className="text-sm font-heading font-medium text-primary-light/70 w-12 shrink-0 group-hover:text-primary-light/90 transition-colors duration-500">
+                  <span className="text-sm font-heading font-medium text-primary-light/80 w-12 shrink-0 group-hover:text-primary-light/90 transition-colors duration-500">
                     {m.year}
                   </span>
-                  <p className="text-sm text-muted/70 group-hover:text-muted/90 transition-colors duration-500">{m.label}</p>
+                  <p className="text-sm text-muted/80 group-hover:text-muted/90 transition-colors duration-500">{m.label}</p>
                 </motion.div>
               ))}
             </div>

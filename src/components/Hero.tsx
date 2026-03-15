@@ -17,7 +17,7 @@ function AbstractShape() {
       {/* Orbiting circles */}
       <motion.circle
         cx="200" cy="200" r="140"
-        stroke="rgba(75,141,248,0.14)"
+        stroke="rgba(90,154,249,0.14)"
         strokeWidth="0.5"
         initial={{ pathLength: 0, rotate: 0 }}
         animate={{ pathLength: 1, rotate: 360 }}
@@ -25,7 +25,7 @@ function AbstractShape() {
       />
       <motion.circle
         cx="200" cy="200" r="100"
-        stroke="rgba(34,201,219,0.10)"
+        stroke="rgba(56,210,228,0.10)"
         strokeWidth="0.5"
         initial={{ pathLength: 0, rotate: 0 }}
         animate={{ pathLength: 1, rotate: -360 }}
@@ -33,7 +33,7 @@ function AbstractShape() {
       />
       <motion.circle
         cx="200" cy="200" r="55"
-        stroke="rgba(157,113,247,0.08)"
+        stroke="rgba(168,128,248,0.08)"
         strokeWidth="0.5"
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
@@ -42,21 +42,21 @@ function AbstractShape() {
       {/* Small dots on orbits */}
       <motion.circle
         cx="340" cy="200" r="2.5"
-        fill="rgba(75,141,248,0.35)"
+        fill="rgba(90,154,249,0.35)"
         initial={{ opacity: 0 }}
         animate={{ opacity: [0, 1, 0.6] }}
         transition={{ duration: 2, delay: 2 }}
       />
       <motion.circle
         cx="200" cy="100" r="2"
-        fill="rgba(34,201,219,0.30)"
+        fill="rgba(56,210,228,0.30)"
         initial={{ opacity: 0 }}
         animate={{ opacity: [0, 1, 0.5] }}
         transition={{ duration: 2, delay: 2.3 }}
       />
       <motion.circle
         cx="145" cy="210" r="1.5"
-        fill="rgba(157,113,247,0.30)"
+        fill="rgba(168,128,248,0.30)"
         initial={{ opacity: 0 }}
         animate={{ opacity: [0, 1, 0.4] }}
         transition={{ duration: 2, delay: 2.6 }}
@@ -136,7 +136,7 @@ export default function Hero() {
       </div>
 
       {/* Subtle horizon line */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.10] to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.12] to-transparent" />
 
       <div className="hero-content relative z-10 px-6 md:px-12 lg:px-20 max-w-5xl">
         <motion.p
@@ -165,7 +165,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.7 }}
-          className="text-muted/70 text-base md:text-lg max-w-md mb-12 leading-relaxed"
+          className="text-muted/80 text-base md:text-lg max-w-md mb-12 leading-relaxed"
         >
           Vous lancez votre activité et vous avez besoin d&apos;avancer vite ?
           On construit ensemble ce dont vous avez vraiment besoin.
@@ -186,7 +186,7 @@ export default function Hero() {
           </a>
           <a
             href="#approche"
-            className="link-hover inline-block px-1 py-3.5 text-muted/70 font-medium text-sm hover:text-foreground/80 transition-colors"
+            className="link-hover inline-block px-1 py-3.5 text-muted/80 font-medium text-sm hover:text-foreground/80 transition-colors"
           >
             Comment ça marche
           </a>

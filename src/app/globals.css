@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #0c1222;
+  --color-background: #111a2e;
   --color-foreground: #f8fafc;
-  --color-primary: #4b8df8;
-  --color-primary-light: #22c9db;
-  --color-accent: #9d71f7;
-  --color-muted: #b0bdd0;
-  --color-surface: #141d30;
-  --color-surface-light: #1c2640;
+  --color-primary: #5a9af9;
+  --color-primary-light: #38d2e4;
+  --color-accent: #a880f8;
+  --color-muted: #c2ccdb;
+  --color-surface: #182238;
+  --color-surface-light: #212e48;
   --font-sans: var(--font-inter);
   --font-heading: var(--font-space-grotesk);
 }
@@ -57,13 +57,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::selection {
-  background: rgba(75, 141, 248, 0.3);
+  background: rgba(90, 154, 249, 0.3);
   color: #f8fafc;
 }
 
 /* Gradient text — used sparingly */
 .gradient-text {
-  background: linear-gradient(135deg, #4b8df8, #22c9db);
+  background: linear-gradient(135deg, #5a9af9, #38d2e4);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
