@@ -38,7 +38,7 @@ export default function Apropos() {
 
   return (
     <section
-      id="apropos"
+      id="a-propos"
       ref={sectionRef}
       className="relative py-28 md:py-40 px-6 md:px-12 lg:px-20 overflow-hidden"
     >

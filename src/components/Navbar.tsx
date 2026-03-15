@@ -8,7 +8,7 @@ import Image from "next/image";
 const navLinks = [
   { label: "Approche", href: "#approche" },
   { label: "Réalisations", href: "#realisations" },
-  { label: "À propos", href: "#apropos" },
+  { label: "À propos", href: "#a-propos" },
   { label: "Blog", href: "/blog" },
 ];
 
@@ -35,7 +35,7 @@ export default function Navbar() {
       }`}
     >
       <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-20 py-5 flex items-center justify-between">
-        <a href="#hero" className="flex items-center gap-3 group">
+        <a href="#accueil" className="flex items-center gap-3 group">
           <Image
             src="/logo.svg"
             alt="J.Devos"

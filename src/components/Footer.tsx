@@ -32,7 +32,7 @@ export default function Footer() {
             <div className="space-y-2">
               <a href="#approche" className="block hover:text-foreground/80 transition-colors">Approche</a>
               <a href="#realisations" className="block hover:text-foreground/80 transition-colors">Réalisations</a>
-              <a href="#apropos" className="block hover:text-foreground/80 transition-colors">À propos</a>
+              <a href="#a-propos" className="block hover:text-foreground/80 transition-colors">À propos</a>
               <a href="/blog" className="block hover:text-foreground/80 transition-colors">Blog</a>
             </div>
             <div className="space-y-2">

@@ -123,7 +123,7 @@ export default function Hero() {
 
   return (
     <section
-      id="hero"
+      id="accueil"
       ref={containerRef}
       className="relative min-h-screen flex items-end pb-24 md:pb-32 overflow-hidden"
     >
