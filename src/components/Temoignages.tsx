@@ -85,7 +85,7 @@ export default function Temoignages() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.15 }}
           >
-            <blockquote className="border-l-2 border-primary-light/50 pl-6 md:pl-10">
+            <blockquote className="border-l-2 border-warm/60 pl-6 md:pl-10">
               <p className="text-lg md:text-2xl text-foreground/85 leading-relaxed mb-6 max-w-3xl font-light tracking-[-0.01em]">
                 &ldquo;{testimonials[0].quote}&rdquo;
               </p>

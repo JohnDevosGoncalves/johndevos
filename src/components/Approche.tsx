@@ -110,7 +110,7 @@ export default function Approche() {
               <span
                 ref={(el) => { numbersRef.current[i] = el; }}
                 aria-hidden="true"
-                className="font-heading text-6xl md:text-8xl font-bold text-white/[0.08] leading-none select-none md:text-right"
+                className="font-heading text-6xl md:text-8xl font-bold text-warm/[0.15] leading-none select-none md:text-right"
               >
                 {step.num}
               </span>

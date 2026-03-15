@@ -114,12 +114,12 @@ export default function Realisations() {
                 <ProjectVisual type={project.visual} />
               </div>
 
-              <span className="text-xs text-muted/70 font-medium uppercase tracking-wider hidden md:block">
+              <span className="text-xs text-warm/70 font-medium uppercase tracking-wider hidden md:block">
                 {project.category}
               </span>
 
               <div>
-                <span className="text-xs text-muted/70 font-medium uppercase tracking-wider md:hidden mb-1 block">
+                <span className="text-xs text-warm/70 font-medium uppercase tracking-wider md:hidden mb-1 block">
                   {project.category}
                 </span>
                 <h3 className="font-heading text-lg md:text-xl font-semibold mb-2 group-hover:text-foreground transition-colors duration-300">

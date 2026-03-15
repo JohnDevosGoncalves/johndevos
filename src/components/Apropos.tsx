@@ -118,7 +118,7 @@ export default function Apropos() {
                   transition={{ duration: 0.4, delay: 0.4 + i * 0.1 }}
                   className="group flex gap-5 py-4 border-b border-white/[0.12] first:border-t first:border-white/[0.12] hover:bg-white/[0.04] -mx-3 px-3 rounded-sm transition-colors duration-500"
                 >
-                  <span className="text-sm font-heading font-medium text-primary-light/80 w-12 shrink-0 group-hover:text-primary-light/90 transition-colors duration-500">
+                  <span className="text-sm font-heading font-medium text-warm/80 w-12 shrink-0 group-hover:text-warm/90 transition-colors duration-500">
                     {m.year}
                   </span>
                   <p className="text-sm text-muted/80 group-hover:text-muted/90 transition-colors duration-500">{m.label}</p>

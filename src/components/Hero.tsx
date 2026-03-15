@@ -56,7 +56,7 @@ function AbstractShape() {
       />
       <motion.circle
         cx="145" cy="210" r="1.5"
-        fill="rgba(168,128,248,0.30)"
+        fill="rgba(232,168,82,0.30)"
         initial={{ opacity: 0 }}
         animate={{ opacity: [0, 1, 0.4] }}
         transition={{ duration: 2, delay: 2.6 }}

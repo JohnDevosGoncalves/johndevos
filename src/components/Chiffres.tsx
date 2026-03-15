@@ -54,7 +54,7 @@ export default function Chiffres() {
 
   return (
     <section ref={sectionRef} className="relative py-20 md:py-28 px-6">
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-primary-light/5 to-primary/5" />
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-warm/[0.04] to-primary/5" />
       <div className="absolute inset-0 border-y border-white/5" />
 
       <div className="relative z-10 max-w-5xl mx-auto">

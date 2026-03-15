@@ -76,7 +76,7 @@ export const projects: Project[] = [
     description:
       "Conception UX/UI complète d\u2019une plateforme SaaS de networking événementiel. Speed meeting, team building et job dating orchestrés en temps réel avec gestion de tables, tours de parole et chronomètre intégré.",
     tags: ["SaaS", "UX/UI", "Événementiel", "Prototype"],
-    url: "https://marvelapp.com/prototype/7g733gb/screen/62673681",
+    url: "https://o-gong-vitrine.vercel.app/",
     visual: "app",
     featured: true,
     details: {
