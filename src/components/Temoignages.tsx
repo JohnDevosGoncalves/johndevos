@@ -4,7 +4,13 @@ import { useRef, useEffect } from "react";
 import { useInView, motion } from "framer-motion";
 import gsap from "gsap";
 
-const testimonials = [
+interface Testimonial {
+  quote: string;
+  name: string;
+  role: string;
+}
+
+const testimonials: Testimonial[] = [
   {
     quote:
       "John a conçu l\u2019intégralité de l\u2019interface de pilotage de notre système et dirigé le développement de l\u2019application. Sa vision produit et sa rigueur technique ont permis de passer d\u2019un concept complexe à un outil fonctionnel utilisé au quotidien.",

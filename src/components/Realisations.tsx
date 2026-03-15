@@ -2,58 +2,12 @@
 
 import { useRef } from "react";
 import { useInView, motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ArrowRight } from "lucide-react";
+import { projects, type Project } from "@/lib/projects";
 
-const projects = [
-  {
-    category: "Application",
-    title: "Seakite — Beyond the Sea",
-    description:
-      "Conception de l\u2019interface de pilotage complète et direction du développement de l\u2019application pour ce projet de transport maritime innovant.",
-    tags: ["UI/UX", "Direction technique", "Application"],
-    url: "https://beyond-the-sea.com/seakite/",
-    visual: "app" as const,
-  },
-  {
-    category: "SaaS",
-    title: "EPNOS — Premier MVP",
-    description:
-      "Accompagnement de la société PSASS du cadrage fonctionnel à la mise en production de leur outil métier. Première version opérationnelle livrée.",
-    tags: ["SaaS", "MVP", "Cadrage produit"],
-    url: "https://www.psass.fr/",
-    visual: "saas" as const,
-  },
-  {
-    category: "Sites & Identité",
-    title: "BGDS, Viveria, AR Façades, ETS Teixeira",
-    description:
-      "Création de chartes graphiques et de sites vitrines pour des entreprises de services. Design adapté à chaque univers métier.",
-    tags: ["Site vitrine", "Charte graphique", "Responsive"],
-    url: "https://www.bgds-domicile.fr/",
-    visual: "web" as const,
-  },
-  {
-    category: "Branding",
-    title: "Logos & identités de marque",
-    description:
-      "Création d\u2019identités visuelles pour Performa Expertise, Protomotech, Colibree Intergénération. Chaque logo pensé pour être mémorable.",
-    tags: ["Logo", "Branding", "Identité visuelle"],
-    url: "https://www.performa-expertise.com/",
-    visual: "brand" as const,
-  },
-  {
-    category: "Accompagnement",
-    title: "My Bestlife — Cadrage & lancement",
-    description:
-      "Définition des besoins avec Julie et Tristan, structuration technique et mise en relation avec une équipe experte pour concrétiser leur projet.",
-    tags: ["Stratégie", "Cadrage", "Go to Market"],
-    url: "https://my-bestlife.com/",
-    visual: "strategy" as const,
-  },
-];
+type VisualType = Project["visual"];
 
-// Small abstract visuals per project type — no fake mockups
-function ProjectVisual({ type }: { type: string }) {
+function ProjectVisual({ type }: { type: VisualType }) {
   const visuals: Record<string, React.ReactNode> = {
     app: (
       <svg viewBox="0 0 80 60" fill="none" className="w-full h-full">
@@ -142,8 +96,8 @@ export default function Realisations() {
           </p>
         </motion.div>
 
-        <div className="space-y-0">
-          {projects.map((project, i) => (
+        <div className="space-y-0 mb-10">
+          {projects.slice(0, 5).map((project, i) => (
             <motion.a
               key={project.title}
               href={project.url}
@@ -194,6 +148,21 @@ export default function Realisations() {
             </motion.a>
           ))}
         </div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.5, delay: 0.6 }}
+          className="text-center"
+        >
+          <a
+            href="/projets"
+            className="group inline-flex items-center gap-2 text-sm text-muted/80 hover:text-primary-light font-medium transition-colors duration-300"
+          >
+            Voir tous les projets
+            <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-300" />
+          </a>
+        </motion.div>
       </div>
     </section>
   );

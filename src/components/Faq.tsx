@@ -4,7 +4,12 @@ import { useRef, useState } from "react";
 import { useInView, motion, AnimatePresence } from "framer-motion";
 import { Plus } from "lucide-react";
 
-const faqs = [
+interface FaqEntry {
+  question: string;
+  answer: string;
+}
+
+const faqs: FaqEntry[] = [
   {
     question: "Comment se déroule un premier échange ?",
     answer:
@@ -37,7 +42,7 @@ function FaqItem({
   isOpen,
   onToggle,
 }: {
-  faq: (typeof faqs)[0];
+  faq: FaqEntry;
   isOpen: boolean;
   onToggle: () => void;
 }) {

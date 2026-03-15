@@ -4,7 +4,14 @@ import { useRef, useEffect } from "react";
 import { useInView, motion } from "framer-motion";
 import gsap from "gsap";
 
-const steps = [
+interface Step {
+  num: string;
+  title: string;
+  text: string;
+  icon: React.ReactNode;
+}
+
+const steps: Step[] = [
   {
     num: "01",
     title: "Comprendre",

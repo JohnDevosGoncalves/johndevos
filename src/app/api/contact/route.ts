@@ -104,10 +104,9 @@ export async function POST(request: NextRequest) {
   };
 
   // TODO: Replace with your email service (Resend, SendGrid, Nodemailer, etc.)
-  // For now, log to server console
-  console.log("=== Nouveau message de contact ===");
-  console.log(JSON.stringify(sanitizedData, null, 2));
-  console.log("==================================");
+  if (process.env.NODE_ENV === "development") {
+    console.log("[contact]", JSON.stringify(sanitizedData, null, 2));
+  }
 
   return NextResponse.json({ success: true });
 }
