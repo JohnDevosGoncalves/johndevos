@@ -79,7 +79,7 @@ export default function Approche() {
     <section
       id="approche"
       ref={sectionRef}
-      className="py-28 md:py-40 px-6 md:px-12 lg:px-20"
+      className="py-28 md:py-40 px-6 md:px-12 lg:px-20 bg-lightbg"
     >
       <div className="max-w-5xl mx-auto">
         <motion.div
@@ -88,10 +88,10 @@ export default function Approche() {
           transition={{ duration: 0.7 }}
           className="mb-20 max-w-2xl"
         >
-          <h2 className="font-heading text-3xl md:text-4xl font-bold mb-5">
+          <h2 className="font-heading text-3xl md:text-4xl font-bold mb-5 text-background">
             La complexité tue les projets.
           </h2>
-          <p className="text-muted/80 text-lg leading-relaxed">
+          <p className="text-lightmuted text-lg leading-relaxed">
             Trop de projets échouent parce qu&apos;ils veulent tout faire dès le
             départ. Mon travail, c&apos;est de réduire pour accélérer.
           </p>
@@ -104,7 +104,7 @@ export default function Approche() {
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.15 + i * 0.15 }}
-              className="step-row group relative grid md:grid-cols-[120px_1fr] gap-4 md:gap-10 py-12 border-t border-white/[0.12] first:border-t-0"
+              className="step-row group relative grid md:grid-cols-[120px_1fr] gap-4 md:gap-10 py-12 border-t border-background/[0.08] first:border-t-0"
             >
               {/* Large parallax number */}
               <span
@@ -117,14 +117,14 @@ export default function Approche() {
 
               <div className="md:pt-2">
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="text-primary-light/60 group-hover:text-primary-light/90 transition-colors duration-500" aria-hidden="true">
+                  <span className="text-primary/50 group-hover:text-primary/80 transition-colors duration-500" aria-hidden="true">
                     {step.icon}
                   </span>
-                  <h3 className="font-heading text-xl md:text-2xl font-semibold group-hover:text-primary-light transition-colors duration-500">
+                  <h3 className="font-heading text-xl md:text-2xl font-semibold text-background group-hover:text-primary transition-colors duration-500">
                     {step.title}
                   </h3>
                 </div>
-                <p className="text-muted/80 leading-relaxed max-w-lg">
+                <p className="text-lightmuted leading-relaxed max-w-lg">
                   {step.text}
                 </p>
               </div>

@@ -40,7 +40,7 @@ export default function Apropos() {
     <section
       id="a-propos"
       ref={sectionRef}
-      className="relative py-28 md:py-40 px-6 md:px-12 lg:px-20 overflow-hidden"
+      className="relative py-28 md:py-40 px-6 md:px-12 lg:px-20 overflow-hidden bg-lightbg"
     >
       {/* Decorative "10" in background */}
       <div
@@ -48,7 +48,7 @@ export default function Apropos() {
         className="absolute left-[50%] md:left-[60%] top-[10%] pointer-events-none select-none"
         aria-hidden="true"
       >
-        <span className="font-heading text-[14rem] md:text-[20rem] font-bold text-white/[0.05] leading-none block">
+        <span className="font-heading text-[14rem] md:text-[20rem] font-bold text-background/[0.04] leading-none block">
           10
         </span>
       </div>
@@ -60,7 +60,7 @@ export default function Apropos() {
           transition={{ duration: 0.7 }}
           className="mb-16 max-w-2xl"
         >
-          <h2 className="font-heading text-3xl md:text-4xl font-bold">
+          <h2 className="font-heading text-3xl md:text-4xl font-bold text-background">
             10 ans de terrain
           </h2>
         </motion.div>
@@ -70,7 +70,7 @@ export default function Apropos() {
             initial={{ opacity: 0, y: 25 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.7, delay: 0.15 }}
-            className="space-y-5 text-muted/80 leading-[1.8]"
+            className="space-y-5 text-lightmuted leading-[1.8]"
           >
             <p>
               J&apos;ai commencé il y a une dizaine d&apos;années, comme
@@ -97,7 +97,7 @@ export default function Apropos() {
               qu&apos;un regard extérieur, ancré dans la pratique, fait la
               différence.
             </p>
-            <p className="text-foreground/70">
+            <p className="text-background/70">
               Mon rôle n&apos;est pas de tout savoir — c&apos;est de savoir
               quoi mettre en place, dans quel ordre, pour que votre projet
               avance vraiment.
@@ -116,12 +116,12 @@ export default function Apropos() {
                   initial={{ opacity: 0 }}
                   animate={isInView ? { opacity: 1 } : {}}
                   transition={{ duration: 0.4, delay: 0.4 + i * 0.1 }}
-                  className="group flex gap-5 py-4 border-b border-white/[0.12] first:border-t first:border-white/[0.12] hover:bg-white/[0.04] -mx-3 px-3 rounded-sm transition-colors duration-500"
+                  className="group flex gap-5 py-4 border-b border-background/[0.08] first:border-t first:border-background/[0.08] hover:bg-background/[0.03] -mx-3 px-3 rounded-sm transition-colors duration-500"
                 >
                   <span className="text-sm font-heading font-medium text-warm/80 w-12 shrink-0 group-hover:text-warm/90 transition-colors duration-500">
                     {m.year}
                   </span>
-                  <p className="text-sm text-muted/80 group-hover:text-muted/90 transition-colors duration-500">{m.label}</p>
+                  <p className="text-sm text-lightmuted group-hover:text-background/70 transition-colors duration-500">{m.label}</p>
                 </motion.div>
               ))}
             </div>

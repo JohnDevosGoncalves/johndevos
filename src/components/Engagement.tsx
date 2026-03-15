@@ -8,7 +8,7 @@ export default function Engagement() {
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   return (
-    <section ref={sectionRef} className="py-28 md:py-40 px-6 md:px-12 lg:px-20">
+    <section ref={sectionRef} className="py-28 md:py-40 px-6 md:px-12 lg:px-20 bg-lightbg">
       <div className="max-w-5xl mx-auto">
         <div className="grid md:grid-cols-[3fr_2fr] gap-12 md:gap-20">
           <motion.div
@@ -16,18 +16,18 @@ export default function Engagement() {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.7 }}
           >
-            <h2 className="font-heading text-3xl md:text-4xl font-bold mb-6">
+            <h2 className="font-heading text-3xl md:text-4xl font-bold mb-6 text-background">
               Engagement associatif
             </h2>
 
-            <div className="space-y-5 text-muted/80 leading-[1.8]">
+            <div className="space-y-5 text-lightmuted leading-[1.8]">
               <p>
                 Depuis 2016, je suis partenaire de{" "}
                 <a
                   href="https://www.instagram.com/asso.partage/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-foreground/90 underline underline-offset-4 decoration-white/25 hover:decoration-white/45 transition-colors"
+                  className="text-background/90 underline underline-offset-4 decoration-background/20 hover:decoration-background/40 transition-colors"
                 >
                   l&apos;Association Partage
                 </a>
@@ -69,12 +69,12 @@ export default function Engagement() {
                 initial={{ opacity: 0 }}
                 animate={isInView ? { opacity: 1 } : {}}
                 transition={{ duration: 0.4, delay: 0.3 + i * 0.1 }}
-                className="group py-5 border-b border-white/[0.12] first:border-t first:border-white/[0.12] hover:bg-white/[0.04] -mx-3 px-3 rounded-sm transition-colors duration-500"
+                className="group py-5 border-b border-background/[0.08] first:border-t first:border-background/[0.08] hover:bg-background/[0.03] -mx-3 px-3 rounded-sm transition-colors duration-500"
               >
-                <h4 className="text-sm font-medium text-foreground/90 mb-1 group-hover:text-foreground/90 transition-colors duration-500">
+                <h4 className="text-sm font-medium text-background/90 mb-1 group-hover:text-background transition-colors duration-500">
                   {item.title}
                 </h4>
-                <p className="text-sm text-muted/80 leading-relaxed">
+                <p className="text-sm text-lightmuted leading-relaxed">
                   {item.text}
                 </p>
               </motion.div>

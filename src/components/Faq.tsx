@@ -47,13 +47,13 @@ function FaqItem({
   onToggle: () => void;
 }) {
   return (
-    <div className="border-b border-white/[0.12]">
+    <div className="border-b border-background/[0.08]">
       <button
         onClick={onToggle}
         aria-expanded={isOpen}
         className="w-full flex items-start justify-between py-6 text-left group gap-4"
       >
-        <span className="font-heading text-base md:text-lg font-medium text-foreground/90 group-hover:text-foreground transition-colors">
+        <span className="font-heading text-base md:text-lg font-medium text-background/90 group-hover:text-background transition-colors">
           {faq.question}
         </span>
         <motion.div
@@ -62,7 +62,7 @@ function FaqItem({
           className="shrink-0 mt-1"
           aria-hidden="true"
         >
-          <Plus size={16} className="text-muted/70" />
+          <Plus size={16} className="text-lightmuted" />
         </motion.div>
       </button>
       <AnimatePresence>
@@ -74,7 +74,7 @@ function FaqItem({
             transition={{ duration: 0.25 }}
             className="overflow-hidden"
           >
-            <p className="text-muted text-sm leading-relaxed pb-6 pr-12">
+            <p className="text-lightmuted text-sm leading-relaxed pb-6 pr-12">
               {faq.answer}
             </p>
           </motion.div>
@@ -90,7 +90,7 @@ export default function Faq() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section ref={sectionRef} className="py-28 md:py-40 px-6 md:px-12 lg:px-20">
+    <section ref={sectionRef} className="py-28 md:py-40 px-6 md:px-12 lg:px-20 bg-lightbg">
       <div className="max-w-3xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -98,7 +98,7 @@ export default function Faq() {
           transition={{ duration: 0.7 }}
           className="mb-12"
         >
-          <h2 className="font-heading text-3xl md:text-4xl font-bold">
+          <h2 className="font-heading text-3xl md:text-4xl font-bold text-background">
             Questions fréquentes
           </h2>
         </motion.div>

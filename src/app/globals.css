@@ -10,6 +10,8 @@
   --color-muted: #c2ccdb;
   --color-surface: #182238;
   --color-surface-light: #212e48;
+  --color-lightbg: #f5f6fa;
+  --color-lightmuted: #5a6478;
   --font-sans: var(--font-inter);
   --font-heading: var(--font-space-grotesk);
 }
