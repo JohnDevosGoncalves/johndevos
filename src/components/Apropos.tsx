@@ -6,7 +6,7 @@ import { useInView, motion } from "framer-motion";
 const milestones = [
   { year: "2016", label: "Lancement d'un projet innovant et intégration des réseaux pro" },
   { year: "2018", label: "Lancement d'une première société" },
-  { year: "2021", label: "Associé et directeur technique dans une 2\u00e8me société" },
+  { year: "2021", label: "Associé et directeur technique dans une 2ème société" },
   { year: "2023", label: "Formateur et conférences" },
   { year: "2026", label: "Accompagnement des entreprises" },
 ];
@@ -19,32 +19,27 @@ export default function Apropos() {
     <section
       id="apropos"
       ref={sectionRef}
-      className="relative py-32 md:py-44 px-6"
+      className="py-28 md:py-40 px-6 md:px-12 lg:px-20"
     >
       <div className="max-w-5xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          transition={{ duration: 0.7 }}
+          className="mb-16 max-w-2xl"
         >
-          <p className="text-primary-light text-sm font-medium tracking-widest uppercase mb-4">
-            À propos
-          </p>
-          <h2 className="font-heading text-3xl md:text-5xl font-bold mb-6">
-            10 ans de terrain,
-            <br />
-            <span className="gradient-text">une conviction.</span>
+          <h2 className="font-heading text-3xl md:text-4xl font-bold">
+            10 ans de terrain
           </h2>
         </motion.div>
 
-        <div className="grid md:grid-cols-5 gap-12 md:gap-16 items-start">
-          {/* Text — 3 cols */}
+        <div className="grid md:grid-cols-[3fr_2fr] gap-12 md:gap-20">
+          {/* Text */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 25 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="md:col-span-3 space-y-6 text-muted leading-relaxed"
+            transition={{ duration: 0.7, delay: 0.15 }}
+            className="space-y-5 text-muted leading-relaxed"
           >
             <p>
               J&apos;ai commencé il y a une dizaine d&apos;années, comme
@@ -71,36 +66,32 @@ export default function Apropos() {
               qu&apos;un regard extérieur, ancré dans la pratique, fait la
               différence.
             </p>
-            <p className="text-foreground/90 font-medium">
+            <p className="text-foreground/80">
               Mon rôle n&apos;est pas de tout savoir — c&apos;est de savoir
               quoi mettre en place, dans quel ordre, pour que votre projet
               avance vraiment.
             </p>
           </motion.div>
 
-          {/* Timeline — 2 cols */}
+          {/* Timeline */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 25 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="md:col-span-2"
+            transition={{ duration: 0.7, delay: 0.3 }}
           >
-            <div className="relative pl-6 border-l border-white/10">
+            <div className="space-y-0">
               {milestones.map((m, i) => (
                 <motion.div
                   key={m.year}
-                  initial={{ opacity: 0, x: -15 }}
-                  animate={isInView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.5, delay: 0.5 + i * 0.12 }}
-                  className="relative mb-8 last:mb-0"
+                  initial={{ opacity: 0 }}
+                  animate={isInView ? { opacity: 1 } : {}}
+                  transition={{ duration: 0.4, delay: 0.4 + i * 0.1 }}
+                  className="flex gap-5 py-4 border-b border-white/[0.06] first:border-t first:border-white/[0.06]"
                 >
-                  {/* Dot */}
-                  <div className="absolute -left-[calc(0.75rem+1.5px)] top-1 w-3 h-3 rounded-full bg-gradient-to-br from-primary to-primary-light" />
-
-                  <span className="text-xs font-medium text-primary-light tracking-widest">
+                  <span className="text-sm font-heading font-medium text-primary-light/70 w-12 shrink-0">
                     {m.year}
                   </span>
-                  <p className="text-sm text-muted mt-1">{m.label}</p>
+                  <p className="text-sm text-muted">{m.label}</p>
                 </motion.div>
               ))}
             </div>

@@ -6,13 +6,10 @@ import { Menu, X } from "lucide-react";
 import Image from "next/image";
 
 const navLinks = [
-  { label: "Accueil", href: "#hero" },
   { label: "Approche", href: "#approche" },
   { label: "Réalisations", href: "#realisations" },
   { label: "À propos", href: "#apropos" },
-  { label: "Expertises", href: "#expertises" },
   { label: "Blog", href: "/blog" },
-  { label: "Contact", href: "#contact" },
 ];
 
 export default function Navbar() {
@@ -32,11 +29,11 @@ export default function Navbar() {
       transition={{ duration: 0.8, ease: "easeOut" }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-background/80 backdrop-blur-xl border-b border-white/5"
+          ? "bg-background/80 backdrop-blur-xl border-b border-white/[0.04]"
           : "bg-transparent"
       }`}
     >
-      <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
+      <div className="mx-auto max-w-7xl px-6 md:px-12 lg:px-20 py-4 flex items-center justify-between">
         <a href="#hero" className="flex items-center gap-3">
           <Image
             src="/logo.svg"
@@ -63,9 +60,9 @@ export default function Navbar() {
           ))}
           <a
             href="#contact"
-            className="text-sm px-5 py-2.5 rounded-full bg-gradient-to-r from-primary to-primary-light text-white font-medium hover:opacity-90 transition-opacity"
+            className="text-sm px-5 py-2 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition-colors"
           >
-            Démarrer un projet
+            Contact
           </a>
         </div>
 
@@ -86,7 +83,7 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-background/95 backdrop-blur-xl border-b border-white/5"
+            className="md:hidden bg-background/95 backdrop-blur-xl border-b border-white/[0.04]"
           >
             <div className="px-6 py-6 flex flex-col gap-4">
               {navLinks.map((link) => (
@@ -102,9 +99,9 @@ export default function Navbar() {
               <a
                 href="#contact"
                 onClick={() => setMobileOpen(false)}
-                className="mt-2 text-center text-sm px-5 py-3 rounded-full bg-gradient-to-r from-primary to-primary-light text-white font-medium"
+                className="mt-2 text-center text-sm px-5 py-3 rounded-lg bg-primary text-white font-medium"
               >
-                Démarrer un projet
+                Contact
               </a>
             </div>
           </motion.div>

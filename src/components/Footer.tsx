@@ -3,100 +3,65 @@
 import { Linkedin } from "lucide-react";
 import Image from "next/image";
 
-const navLinks = [
-  { label: "Approche", href: "#approche" },
-  { label: "Réalisations", href: "#realisations" },
-  { label: "Expertises", href: "#expertises" },
-  { label: "Blog", href: "/blog" },
-  { label: "Contact", href: "#contact" },
-];
-
 export default function Footer() {
   return (
-    <footer className="border-t border-white/5">
-      <div className="max-w-6xl mx-auto px-6 py-16">
-        <div className="grid md:grid-cols-3 gap-12 md:gap-8 mb-12">
-          {/* Brand */}
+    <footer className="border-t border-white/[0.04] py-12 px-6 md:px-12 lg:px-20">
+      <div className="max-w-5xl mx-auto">
+        <div className="flex flex-col md:flex-row items-start justify-between gap-8 mb-10">
           <div>
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-3 mb-3">
               <Image
                 src="/logo.svg"
                 alt="J.Devos"
-                width={28}
-                height={26}
-                className="h-7 w-auto"
+                width={24}
+                height={22}
+                className="h-6 w-auto"
               />
-              <span className="font-heading text-lg font-bold tracking-tight">
+              <span className="font-heading text-base font-bold tracking-tight">
                 J.Devos
               </span>
             </div>
-            <p className="text-sm text-muted leading-relaxed max-w-xs">
-              Accompagnement sur-mesure pour transformer votre idée en produit
-              concret et accélérer votre mise sur le marché.
+            <p className="text-sm text-muted/60 max-w-xs leading-relaxed">
+              Accompagnement sur-mesure pour les entreprises en lancement.
+              <br />
+              Centre-Val de Loire & à distance.
             </p>
           </div>
 
-          {/* Navigation */}
-          <div>
-            <h4 className="text-sm font-medium text-foreground mb-4">
-              Navigation
-            </h4>
-            <ul className="space-y-2.5">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <a
-                    href={link.href}
-                    className="text-sm text-muted hover:text-foreground transition-colors"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contact & Social */}
-          <div>
-            <h4 className="text-sm font-medium text-foreground mb-4">
-              Me retrouver
-            </h4>
-            <div className="space-y-3">
+          <div className="flex flex-col sm:flex-row gap-8 sm:gap-14 text-sm text-muted/60">
+            <div className="space-y-2">
+              <a href="#approche" className="block hover:text-foreground/70 transition-colors">Approche</a>
+              <a href="#realisations" className="block hover:text-foreground/70 transition-colors">Réalisations</a>
+              <a href="#apropos" className="block hover:text-foreground/70 transition-colors">À propos</a>
+              <a href="/blog" className="block hover:text-foreground/70 transition-colors">Blog</a>
+            </div>
+            <div className="space-y-2">
               <a
                 href="https://www.linkedin.com/in/john-devos-goncalves/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-sm text-muted hover:text-foreground transition-colors"
+                className="flex items-center gap-2 hover:text-foreground/70 transition-colors"
               >
-                <Linkedin size={16} />
+                <Linkedin size={14} />
                 LinkedIn
               </a>
-              <a
-                href="mailto:contact@johndevos.fr"
-                className="text-sm text-muted hover:text-foreground transition-colors"
-              >
+              <a href="mailto:contact@johndevos.fr" className="block hover:text-foreground/70 transition-colors">
                 contact@johndevos.fr
               </a>
             </div>
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-muted/60">
-            &copy; {new Date().getFullYear()} John Devos. Tous droits réservés.
+        <div className="pt-6 border-t border-white/[0.04] flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-xs text-muted/40">
+            &copy; {new Date().getFullYear()} John Devos
           </p>
-          <div className="flex items-center gap-6">
-            <a
-              href="/mentions-legales"
-              className="text-xs text-muted/60 hover:text-muted transition-colors"
-            >
+          <div className="flex items-center gap-5 text-xs text-muted/40">
+            <a href="/mentions-legales" className="hover:text-muted/60 transition-colors">
               Mentions légales
             </a>
-            <a
-              href="/politique-de-confidentialite"
-              className="text-xs text-muted/60 hover:text-muted transition-colors"
-            >
-              Politique de confidentialité
+            <a href="/politique-de-confidentialite" className="hover:text-muted/60 transition-colors">
+              Confidentialité
             </a>
           </div>
         </div>

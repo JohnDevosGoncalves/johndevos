@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useInView, motion, AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { Plus } from "lucide-react";
 
 const faqs = [
   {
@@ -42,20 +42,20 @@ function FaqItem({
   onToggle: () => void;
 }) {
   return (
-    <div className="border-b border-white/5 last:border-b-0">
+    <div className="border-b border-white/[0.06]">
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between py-6 text-left group"
+        className="w-full flex items-start justify-between py-6 text-left group gap-4"
       >
-        <span className="font-heading text-lg font-medium text-foreground group-hover:text-primary-light transition-colors pr-8">
+        <span className="font-heading text-base md:text-lg font-medium text-foreground/90 group-hover:text-foreground transition-colors">
           {faq.question}
         </span>
         <motion.div
-          animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ duration: 0.3 }}
-          className="shrink-0"
+          animate={{ rotate: isOpen ? 45 : 0 }}
+          transition={{ duration: 0.2 }}
+          className="shrink-0 mt-1"
         >
-          <ChevronDown size={20} className="text-muted" />
+          <Plus size={16} className="text-muted/50" />
         </motion.div>
       </button>
       <AnimatePresence>
@@ -64,10 +64,10 @@ function FaqItem({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.25 }}
             className="overflow-hidden"
           >
-            <p className="text-muted leading-relaxed pb-6 pr-12">
+            <p className="text-muted text-sm leading-relaxed pb-6 pr-12">
               {faq.answer}
             </p>
           </motion.div>
@@ -83,29 +83,23 @@ export default function Faq() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section ref={sectionRef} className="relative py-32 md:py-44 px-6">
-      <div className="relative z-10 max-w-3xl mx-auto">
+    <section ref={sectionRef} className="py-28 md:py-40 px-6 md:px-12 lg:px-20">
+      <div className="max-w-3xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          transition={{ duration: 0.7 }}
+          className="mb-12"
         >
-          <p className="text-primary-light text-sm font-medium tracking-widest uppercase mb-4">
+          <h2 className="font-heading text-3xl md:text-4xl font-bold">
             Questions fréquentes
-          </p>
-          <h2 className="font-heading text-3xl md:text-5xl font-bold mb-6">
-            Vous vous demandez
-            <br />
-            <span className="gradient-text">comment ça marche ?</span>
           </h2>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="rounded-2xl bg-surface-light/30 border border-white/5 px-8"
+          transition={{ duration: 0.7, delay: 0.15 }}
         >
           {faqs.map((faq, i) => (
             <FaqItem

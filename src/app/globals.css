@@ -33,7 +33,7 @@ h1, h2, h3, h4, h5, h6 {
   color: #f8fafc;
 }
 
-/* Gradient text utility */
+/* Gradient text — use sparingly */
 .gradient-text {
   background: linear-gradient(135deg, #3b82f6, #06b6d4);
   -webkit-background-clip: text;
@@ -41,21 +41,20 @@ h1, h2, h3, h4, h5, h6 {
   background-clip: text;
 }
 
-/* Glow effect */
-.glow {
-  box-shadow: 0 0 40px rgba(59, 130, 246, 0.15), 0 0 80px rgba(6, 182, 212, 0.05);
-}
-
-/* Custom scrollbar */
+/* Subtle scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #050510;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #3b82f6, #06b6d4);
+  background: rgba(148, 163, 184, 0.2);
   border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.35);
 }

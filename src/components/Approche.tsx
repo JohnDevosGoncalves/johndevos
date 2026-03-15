@@ -2,31 +2,6 @@
 
 import { useRef } from "react";
 import { useInView, motion } from "framer-motion";
-import { Zap, Target, Rocket } from "lucide-react";
-
-const steps = [
-  {
-    icon: Target,
-    title: "Comprendre",
-    description:
-      "Votre vision, votre marché, vos contraintes. Je pose les bonnes questions pour cadrer le projet au plus juste.",
-    accent: "from-primary to-primary-light",
-  },
-  {
-    icon: Zap,
-    title: "Simplifier",
-    description:
-      "Chaque fonctionnalité est challengée. On garde l'essentiel pour valider vite — le reste viendra après.",
-    accent: "from-primary-light to-accent",
-  },
-  {
-    icon: Rocket,
-    title: "Lancer",
-    description:
-      "Un premier produit concret, en production, prêt à confronter le marché. Votre Go to Market démarre ici.",
-    accent: "from-accent to-primary",
-  },
-];
 
 export default function Approche() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -36,86 +11,63 @@ export default function Approche() {
     <section
       id="approche"
       ref={sectionRef}
-      className="relative py-32 md:py-44 px-6"
+      className="py-28 md:py-40 px-6 md:px-12 lg:px-20"
     >
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-surface to-background" />
-
-      <div className="relative z-10 max-w-6xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-20"
+          transition={{ duration: 0.7 }}
+          className="mb-16 max-w-2xl"
         >
-          <p className="text-primary-light text-sm font-medium tracking-widest uppercase mb-4">
-            Mon approche
-          </p>
-          <h2 className="font-heading text-3xl md:text-5xl font-bold mb-6">
-            La complexité est l&apos;ennemi
-            <br />
-            <span className="gradient-text">de la vitesse.</span>
+          <h2 className="font-heading text-3xl md:text-4xl font-bold mb-5">
+            La complexité tue les projets.
           </h2>
-          <p className="text-muted text-lg max-w-2xl mx-auto leading-relaxed">
+          <p className="text-muted text-lg leading-relaxed">
             Trop de projets échouent parce qu&apos;ils veulent tout faire dès le
-            départ. Ma méthode : réduire pour accélérer.
+            départ. Mon travail, c&apos;est de réduire pour accélérer.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {steps.map((step, i) => (
+        <div className="space-y-0">
+          {[
+            {
+              num: "01",
+              title: "Comprendre",
+              text: "Votre vision, votre marché, vos contraintes. Je pose les bonnes questions pour cadrer le projet au plus juste — et surtout pour identifier ce qui compte vraiment.",
+            },
+            {
+              num: "02",
+              title: "Simplifier",
+              text: "Chaque fonctionnalité est challengée. On garde l'essentiel pour valider vite. Le reste viendra quand les premières bases seront solides.",
+            },
+            {
+              num: "03",
+              title: "Lancer",
+              text: "Un premier produit concret, en production, prêt à rencontrer ses utilisateurs. Votre Go to Market démarre ici.",
+            },
+          ].map((step, i) => (
             <motion.div
-              key={step.title}
-              initial={{ opacity: 0, y: 60 }}
+              key={step.num}
+              initial={{ opacity: 0, y: 25 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, delay: 0.2 + i * 0.2 }}
+              transition={{ duration: 0.6, delay: 0.15 + i * 0.15 }}
+              className="group grid md:grid-cols-[80px_1fr] gap-4 md:gap-8 py-10 border-t border-white/[0.06] first:border-t-0"
             >
-              <div className="group relative p-8 rounded-2xl bg-surface-light/50 border border-white/5 hover:border-primary/30 transition-all duration-500 h-full">
-                {/* Glow on hover */}
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                <div className="relative z-10">
-                  <div
-                    className={`w-14 h-14 rounded-xl bg-gradient-to-br ${step.accent} p-[1px] mb-6`}
-                  >
-                    <div className="w-full h-full rounded-xl bg-surface-light flex items-center justify-center">
-                      <step.icon size={24} className="text-primary-light" />
-                    </div>
-                  </div>
-
-                  <div className="text-xs text-muted font-medium tracking-widest uppercase mb-3">
-                    Étape {i + 1}
-                  </div>
-
-                  <h3 className="font-heading text-2xl font-bold mb-4">
-                    {step.title}
-                  </h3>
-
-                  <p className="text-muted leading-relaxed">
-                    {step.description}
-                  </p>
-                </div>
+              <span className="font-heading text-sm text-muted/40 font-medium pt-1">
+                {step.num}
+              </span>
+              <div>
+                <h3 className="font-heading text-xl md:text-2xl font-semibold mb-3 group-hover:text-primary-light transition-colors duration-300">
+                  {step.title}
+                </h3>
+                <p className="text-muted leading-relaxed max-w-lg">
+                  {step.text}
+                </p>
               </div>
             </motion.div>
           ))}
         </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="text-center mt-16"
-        >
-          <p className="text-muted text-sm mb-5">
-            Envie d&apos;en discuter ? Le premier échange est gratuit.
-          </p>
-          <a
-            href="#contact"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-primary/30 text-primary-light text-sm font-medium hover:bg-primary/5 transition-colors"
-          >
-            Réserver un appel découverte
-          </a>
-        </motion.div>
       </div>
     </section>
   );

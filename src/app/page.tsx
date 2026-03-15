@@ -5,7 +5,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import Chiffres from "@/components/Chiffres";
 import Approche from "@/components/Approche";
 import Realisations from "@/components/Realisations";
 import Temoignages from "@/components/Temoignages";
@@ -28,7 +27,6 @@ export default function Home() {
       <Navbar />
       <main>
         <Hero />
-        <Chiffres />
         <Approche />
         <Realisations />
         <Temoignages />
