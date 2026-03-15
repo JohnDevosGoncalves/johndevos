@@ -48,7 +48,7 @@ export default function Apropos() {
         className="absolute left-[50%] md:left-[60%] top-[10%] pointer-events-none select-none"
         aria-hidden="true"
       >
-        <span className="font-heading text-[14rem] md:text-[20rem] font-bold text-background/[0.04] leading-none block">
+        <span className="font-heading text-[14rem] md:text-[20rem] font-bold text-primary/[0.08] leading-none block">
           10
         </span>
       </div>
