@@ -21,14 +21,14 @@ export default function Footer() {
                 J.Devos
               </span>
             </div>
-            <p className="text-sm text-muted/60 max-w-xs leading-relaxed">
+            <p className="text-sm text-muted/70 max-w-xs leading-relaxed">
               Accompagnement sur-mesure pour les entreprises en lancement.
               <br />
               Centre-Val de Loire & à distance.
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-8 sm:gap-14 text-sm text-muted/60">
+          <nav aria-label="Liens du pied de page" className="flex flex-col sm:flex-row gap-8 sm:gap-14 text-sm text-muted/70">
             <div className="space-y-2">
               <a href="#approche" className="block hover:text-foreground/70 transition-colors">Approche</a>
               <a href="#realisations" className="block hover:text-foreground/70 transition-colors">Réalisations</a>
@@ -49,18 +49,18 @@ export default function Footer() {
                 contact@johndevos.fr
               </a>
             </div>
-          </div>
+          </nav>
         </div>
 
         <div className="pt-6 border-t border-white/[0.04] flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-muted/40">
+          <p className="text-xs text-muted/60">
             &copy; {new Date().getFullYear()} John Devos
           </p>
-          <div className="flex items-center gap-5 text-xs text-muted/40">
-            <a href="/mentions-legales" className="hover:text-muted/60 transition-colors">
+          <div className="flex items-center gap-5 text-xs text-muted/60">
+            <a href="/mentions-legales" className="hover:text-foreground/70 transition-colors">
               Mentions légales
             </a>
-            <a href="/politique-de-confidentialite" className="hover:text-muted/60 transition-colors">
+            <a href="/politique-de-confidentialite" className="hover:text-foreground/70 transition-colors">
               Confidentialité
             </a>
           </div>

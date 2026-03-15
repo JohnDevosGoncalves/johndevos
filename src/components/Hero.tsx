@@ -11,6 +11,8 @@ function AbstractShape() {
       fill="none"
       className="w-full h-full"
       xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      role="presentation"
     >
       {/* Orbiting circles */}
       <motion.circle
@@ -141,7 +143,7 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.3 }}
-          className="text-muted/60 text-sm tracking-wide mb-8"
+          className="text-muted/80 text-sm tracking-wide mb-8"
         >
           John Devos — Consultant digital
         </motion.p>

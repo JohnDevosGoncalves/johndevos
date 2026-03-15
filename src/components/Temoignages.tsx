@@ -54,6 +54,7 @@ export default function Temoignages() {
       {/* Large decorative quotation mark — parallax */}
       <span
         ref={quoteMarkRef}
+        aria-hidden="true"
         className="absolute top-16 right-[5%] md:right-[12%] font-heading text-[16rem] md:text-[22rem] leading-none text-white/[0.02] select-none pointer-events-none"
       >
         &ldquo;
@@ -82,9 +83,9 @@ export default function Temoignages() {
               <p className="text-lg md:text-2xl text-foreground/85 leading-relaxed mb-6 max-w-3xl font-light tracking-[-0.01em]">
                 &ldquo;{testimonials[0].quote}&rdquo;
               </p>
-              <footer className="text-sm text-muted/60">
-                <span className="text-foreground/70 font-medium">{testimonials[0].name}</span>
-                <span className="mx-2 text-white/15">—</span>
+              <footer className="text-sm text-muted/70">
+                <span className="text-foreground/80 font-medium">{testimonials[0].name}</span>
+                <span className="mx-2 text-white/30" aria-hidden="true">—</span>
                 {testimonials[0].role}
               </footer>
             </blockquote>
@@ -104,9 +105,9 @@ export default function Temoignages() {
                     &ldquo;{t.quote}&rdquo;
                   </p>
                   <footer className="text-sm">
-                    <span className="text-foreground/70 font-medium">{t.name}</span>
-                    <span className="mx-2 text-white/15">—</span>
-                    <span className="text-muted/50">{t.role}</span>
+                    <span className="text-foreground/80 font-medium">{t.name}</span>
+                    <span className="mx-2 text-white/30" aria-hidden="true">—</span>
+                    <span className="text-muted/70">{t.role}</span>
                   </footer>
                 </blockquote>
               </motion.div>

@@ -152,32 +152,33 @@ export default function Realisations() {
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.1 + i * 0.08 }}
+              aria-label={`${project.title} — ${project.category}`}
               className="group grid grid-cols-[1fr] md:grid-cols-[80px_140px_1fr_auto] gap-3 md:gap-6 items-center py-7 border-b border-white/[0.06] first:border-t first:border-white/[0.06] cursor-pointer hover:bg-white/[0.01] transition-colors duration-500 -mx-4 px-4 rounded-sm"
             >
               {/* Small abstract visual */}
-              <div className="hidden md:block w-[80px] h-[60px] text-primary-light/80 group-hover:text-primary-light transition-colors duration-500">
+              <div className="hidden md:block w-[80px] h-[60px] text-primary-light/80 group-hover:text-primary-light transition-colors duration-500" aria-hidden="true">
                 <ProjectVisual type={project.visual} />
               </div>
 
-              <span className="text-xs text-muted/40 font-medium uppercase tracking-wider hidden md:block">
+              <span className="text-xs text-muted/60 font-medium uppercase tracking-wider hidden md:block">
                 {project.category}
               </span>
 
               <div>
-                <span className="text-xs text-muted/40 font-medium uppercase tracking-wider md:hidden mb-1 block">
+                <span className="text-xs text-muted/60 font-medium uppercase tracking-wider md:hidden mb-1 block">
                   {project.category}
                 </span>
                 <h3 className="font-heading text-lg md:text-xl font-semibold mb-2 group-hover:text-foreground transition-colors duration-300">
                   {project.title}
                 </h3>
-                <p className="text-muted/60 text-sm leading-relaxed mb-3 max-w-lg">
+                <p className="text-muted/70 text-sm leading-relaxed mb-3 max-w-lg">
                   {project.description}
                 </p>
                 <div className="flex flex-wrap gap-1.5">
                   {project.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="text-[11px] px-2 py-0.5 rounded text-muted/40 border border-white/[0.04]"
+                      className="text-[11px] px-2 py-0.5 rounded text-muted/60 border border-white/[0.06]"
                     >
                       {tag}
                     </span>
@@ -187,7 +188,8 @@ export default function Realisations() {
 
               <ArrowUpRight
                 size={16}
-                className="text-muted/20 group-hover:text-primary-light group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300 hidden md:block"
+                className="text-muted/40 group-hover:text-primary-light group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300 hidden md:block"
+                aria-hidden="true"
               />
             </motion.a>
           ))}

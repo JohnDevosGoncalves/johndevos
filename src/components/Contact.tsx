@@ -76,7 +76,7 @@ export default function Contact() {
               Chaque accompagnement est sur-mesure. Décrivez-moi votre projet et
               je reviens vers vous sous 24h.
             </p>
-            <div className="space-y-3 text-sm text-muted/40">
+            <div className="space-y-3 text-sm text-muted/60">
               <p>Premier échange gratuit, sans engagement.</p>
               <p>Vos données restent confidentielles.</p>
             </div>
@@ -97,7 +97,7 @@ export default function Contact() {
                 <h3 className="font-heading text-xl font-semibold mb-2">
                   Message envoyé
                 </h3>
-                <p className="text-muted/60 text-sm">
+                <p className="text-muted/70 text-sm">
                   Je reviens vers vous très rapidement.
                 </p>
               </motion.div>
@@ -117,7 +117,7 @@ export default function Contact() {
 
                 <div className="grid sm:grid-cols-2 gap-5">
                   <div>
-                    <label htmlFor="name" className="block text-xs text-muted/50 uppercase tracking-wider mb-2">
+                    <label htmlFor="name" className="block text-xs text-muted/70 uppercase tracking-wider mb-2">
                       Nom
                     </label>
                     <input
@@ -125,14 +125,15 @@ export default function Contact() {
                       name="name"
                       type="text"
                       required
+                      aria-required="true"
                       minLength={2}
                       maxLength={200}
-                      className="w-full pb-3 bg-transparent border-b border-white/[0.08] text-foreground placeholder:text-muted/25 focus:outline-none focus:border-white/25 transition-colors text-sm"
+                      className="w-full pb-3 bg-transparent border-b border-white/[0.08] text-foreground placeholder:text-muted/40 focus:outline-none focus:border-white/30 transition-colors text-sm"
                       placeholder="Votre nom"
                     />
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-xs text-muted/50 uppercase tracking-wider mb-2">
+                    <label htmlFor="email" className="block text-xs text-muted/70 uppercase tracking-wider mb-2">
                       Email
                     </label>
                     <input
@@ -140,50 +141,53 @@ export default function Contact() {
                       name="email"
                       type="email"
                       required
+                      aria-required="true"
                       maxLength={200}
-                      className="w-full pb-3 bg-transparent border-b border-white/[0.08] text-foreground placeholder:text-muted/25 focus:outline-none focus:border-white/25 transition-colors text-sm"
+                      className="w-full pb-3 bg-transparent border-b border-white/[0.08] text-foreground placeholder:text-muted/40 focus:outline-none focus:border-white/30 transition-colors text-sm"
                       placeholder="vous@exemple.com"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="company" className="block text-xs text-muted/50 uppercase tracking-wider mb-2">
-                    Entreprise <span className="normal-case tracking-normal text-muted/30">(optionnel)</span>
+                  <label htmlFor="company" className="block text-xs text-muted/70 uppercase tracking-wider mb-2">
+                    Entreprise <span className="normal-case tracking-normal text-muted/50">(optionnel)</span>
                   </label>
                   <input
                     id="company"
                     name="company"
                     type="text"
                     maxLength={200}
-                    className="w-full pb-3 bg-transparent border-b border-white/[0.08] text-foreground placeholder:text-muted/25 focus:outline-none focus:border-white/25 transition-colors text-sm"
+                    className="w-full pb-3 bg-transparent border-b border-white/[0.08] text-foreground placeholder:text-muted/40 focus:outline-none focus:border-white/30 transition-colors text-sm"
                     placeholder="Nom de votre entreprise"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-xs text-muted/50 uppercase tracking-wider mb-2">
+                  <label htmlFor="message" className="block text-xs text-muted/70 uppercase tracking-wider mb-2">
                     Votre projet
                   </label>
                   <textarea
                     id="message"
                     name="message"
                     required
+                    aria-required="true"
                     minLength={10}
                     maxLength={5000}
                     rows={4}
-                    className="w-full pb-3 bg-transparent border-b border-white/[0.08] text-foreground placeholder:text-muted/25 focus:outline-none focus:border-white/25 transition-colors resize-none text-sm leading-relaxed"
+                    className="w-full pb-3 bg-transparent border-b border-white/[0.08] text-foreground placeholder:text-muted/40 focus:outline-none focus:border-white/30 transition-colors resize-none text-sm leading-relaxed"
                     placeholder="Décrivez brièvement votre projet, vos objectifs et votre calendrier..."
                   />
                 </div>
 
                 {error && (
                   <motion.div
+                    role="alert"
                     initial={{ opacity: 0, y: -5 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="flex items-center gap-3 py-3 text-red-400/80 text-sm"
+                    className="flex items-center gap-3 py-3 text-red-400 text-sm"
                   >
-                    <AlertCircle size={14} className="shrink-0" />
+                    <AlertCircle size={14} className="shrink-0" aria-hidden="true" />
                     {error}
                   </motion.div>
                 )}
@@ -194,7 +198,7 @@ export default function Contact() {
                   className="group inline-flex items-center gap-2.5 text-sm font-medium text-foreground hover:text-primary-light transition-colors disabled:opacity-50 pt-2"
                 >
                   {loading ? (
-                    <div className="w-4 h-4 border-2 border-white/20 border-t-white/70 rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-white/20 border-t-white/70 rounded-full animate-spin" role="status" aria-label="Envoi en cours" />
                   ) : (
                     <>
                       Envoyer le message

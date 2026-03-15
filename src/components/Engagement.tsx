@@ -27,7 +27,7 @@ export default function Engagement() {
                   href="https://www.instagram.com/asso.partage/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-foreground/70 underline underline-offset-4 decoration-white/15 hover:decoration-white/35 transition-colors"
+                  className="text-foreground/80 underline underline-offset-4 decoration-white/25 hover:decoration-white/45 transition-colors"
                 >
                   l&apos;Association Partage
                 </a>
@@ -74,7 +74,7 @@ export default function Engagement() {
                 <h4 className="text-sm font-medium text-foreground/80 mb-1 group-hover:text-foreground/90 transition-colors duration-500">
                   {item.title}
                 </h4>
-                <p className="text-sm text-muted/50 leading-relaxed">
+                <p className="text-sm text-muted/70 leading-relaxed">
                   {item.text}
                 </p>
               </motion.div>

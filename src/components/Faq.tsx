@@ -45,6 +45,7 @@ function FaqItem({
     <div className="border-b border-white/[0.06]">
       <button
         onClick={onToggle}
+        aria-expanded={isOpen}
         className="w-full flex items-start justify-between py-6 text-left group gap-4"
       >
         <span className="font-heading text-base md:text-lg font-medium text-foreground/90 group-hover:text-foreground transition-colors">
@@ -54,8 +55,9 @@ function FaqItem({
           animate={{ rotate: isOpen ? 45 : 0 }}
           transition={{ duration: 0.2 }}
           className="shrink-0 mt-1"
+          aria-hidden="true"
         >
-          <Plus size={16} className="text-muted/50" />
+          <Plus size={16} className="text-muted/60" />
         </motion.div>
       </button>
       <AnimatePresence>

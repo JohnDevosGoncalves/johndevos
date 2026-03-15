@@ -77,7 +77,7 @@ export default function Expertises() {
           </div>
           <a
             href="#contact"
-            className="group inline-flex items-center gap-2 text-sm text-muted/50 hover:text-foreground/70 transition-colors duration-300 shrink-0"
+            className="group inline-flex items-center gap-2 text-sm text-muted/70 hover:text-foreground/80 transition-colors duration-300 shrink-0"
           >
             Discuter de votre besoin
             <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-300" />
@@ -94,14 +94,14 @@ export default function Expertises() {
               className="group py-7 border-b border-white/[0.06] hover:bg-white/[0.01] -mx-4 px-4 rounded-sm transition-colors duration-500"
             >
               <div className="flex items-center gap-2.5 mb-2">
-                <span className="text-primary-light/50 group-hover:text-primary-light/80 transition-colors duration-500">
+                <span className="text-primary-light/60 group-hover:text-primary-light/80 transition-colors duration-500" aria-hidden="true">
                   {item.icon}
                 </span>
                 <h3 className="font-heading text-base md:text-lg font-semibold group-hover:text-foreground transition-colors duration-300">
                   {item.title}
                 </h3>
               </div>
-              <p className="text-muted/55 text-sm leading-relaxed pl-[26px]">
+              <p className="text-muted/70 text-sm leading-relaxed pl-[26px]">
                 {item.description}
               </p>
             </motion.div>

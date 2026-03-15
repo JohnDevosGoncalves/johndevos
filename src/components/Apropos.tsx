@@ -46,6 +46,7 @@ export default function Apropos() {
       <div
         ref={decorRef}
         className="absolute left-[50%] md:left-[60%] top-[10%] pointer-events-none select-none"
+        aria-hidden="true"
       >
         <span className="font-heading text-[14rem] md:text-[20rem] font-bold text-white/[0.015] leading-none block">
           10
@@ -117,10 +118,10 @@ export default function Apropos() {
                   transition={{ duration: 0.4, delay: 0.4 + i * 0.1 }}
                   className="group flex gap-5 py-4 border-b border-white/[0.06] first:border-t first:border-white/[0.06] hover:bg-white/[0.01] -mx-3 px-3 rounded-sm transition-colors duration-500"
                 >
-                  <span className="text-sm font-heading font-medium text-primary-light/50 w-12 shrink-0 group-hover:text-primary-light/70 transition-colors duration-500">
+                  <span className="text-sm font-heading font-medium text-primary-light/70 w-12 shrink-0 group-hover:text-primary-light/90 transition-colors duration-500">
                     {m.year}
                   </span>
-                  <p className="text-sm text-muted/60 group-hover:text-muted/80 transition-colors duration-500">{m.label}</p>
+                  <p className="text-sm text-muted/70 group-hover:text-muted/90 transition-colors duration-500">{m.label}</p>
                 </motion.div>
               ))}
             </div>

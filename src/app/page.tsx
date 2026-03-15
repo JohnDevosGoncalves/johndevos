@@ -22,10 +22,12 @@ export default function Home() {
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: prefersReducedMotion ? 0 : 1.2,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
+      smoothWheel: !prefersReducedMotion,
     });
     lenisRef.current = lenis;
 
@@ -36,20 +38,22 @@ export default function Home() {
     });
     gsap.ticker.lagSmoothing(0);
 
-    // Parallax elements
-    gsap.utils.toArray<HTMLElement>("[data-parallax]").forEach((el) => {
-      const speed = parseFloat(el.dataset.parallax || "0.1");
-      gsap.to(el, {
-        y: () => speed * ScrollTrigger.maxScroll(window) * 0.1,
-        ease: "none",
-        scrollTrigger: {
-          trigger: el.closest("section") || el,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 0.5,
-        },
+    // Parallax elements — skip if reduced motion preferred
+    if (!prefersReducedMotion) {
+      gsap.utils.toArray<HTMLElement>("[data-parallax]").forEach((el) => {
+        const speed = parseFloat(el.dataset.parallax || "0.1");
+        gsap.to(el, {
+          y: () => speed * ScrollTrigger.maxScroll(window) * 0.1,
+          ease: "none",
+          scrollTrigger: {
+            trigger: el.closest("section") || el,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.5,
+          },
+        });
       });
-    });
+    }
 
     ScrollTrigger.refresh();
 
@@ -61,8 +65,11 @@ export default function Home() {
 
   return (
     <>
+      <a href="#main-content" className="skip-link">
+        Aller au contenu principal
+      </a>
       <Navbar />
-      <main>
+      <main id="main-content">
         <Hero />
         <Approche />
         <Realisations />

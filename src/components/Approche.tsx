@@ -102,6 +102,7 @@ export default function Approche() {
               {/* Large parallax number */}
               <span
                 ref={(el) => { numbersRef.current[i] = el; }}
+                aria-hidden="true"
                 className="font-heading text-6xl md:text-8xl font-bold text-white/[0.03] leading-none select-none md:text-right"
               >
                 {step.num}
@@ -109,7 +110,7 @@ export default function Approche() {
 
               <div className="md:pt-2">
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="text-primary-light/60 group-hover:text-primary-light/90 transition-colors duration-500">
+                  <span className="text-primary-light/60 group-hover:text-primary-light/90 transition-colors duration-500" aria-hidden="true">
                     {step.icon}
                   </span>
                   <h3 className="font-heading text-xl md:text-2xl font-semibold group-hover:text-primary-light transition-colors duration-500">

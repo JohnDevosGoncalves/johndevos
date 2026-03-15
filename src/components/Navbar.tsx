@@ -24,6 +24,7 @@ export default function Navbar() {
 
   return (
     <motion.nav
+      aria-label="Navigation principale"
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
@@ -53,7 +54,7 @@ export default function Navbar() {
             <a
               key={link.href}
               href={link.href}
-              className="link-hover text-[13px] text-muted/60 hover:text-foreground/80 transition-colors duration-300"
+              className="link-hover text-[13px] text-muted/70 hover:text-foreground/80 transition-colors duration-300"
             >
               {link.label}
             </a>
@@ -70,7 +71,8 @@ export default function Navbar() {
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
           className="md:hidden text-foreground/70"
-          aria-label="Menu"
+          aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
+          aria-expanded={mobileOpen}
         >
           {mobileOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
