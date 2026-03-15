@@ -15,6 +15,7 @@ import Expertises from "@/components/Expertises";
 import Faq from "@/components/Faq";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import ParticleWave from "@/components/ParticleWave";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -68,8 +69,9 @@ export default function Home() {
       <a href="#main-content" className="skip-link">
         Aller au contenu principal
       </a>
+      <ParticleWave />
       <Navbar />
-      <main id="main-content">
+      <main id="main-content" className="relative z-10">
         <Hero />
         <Approche />
         <Realisations />
@@ -80,7 +82,9 @@ export default function Home() {
         <Faq />
         <Contact />
       </main>
-      <Footer />
+      <div className="relative z-10">
+        <Footer />
+      </div>
     </>
   );
 }
