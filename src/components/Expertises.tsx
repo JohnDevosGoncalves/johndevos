@@ -9,26 +9,41 @@ const expertises = [
     title: "Digitalisation & Automatisation",
     description:
       "Transformer vos process manuels en workflows fluides. Moins d\u2019erreurs, plus de temps pour ce qui compte.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4"><path d="M4 12h4l3-8 5 16 3-8h4" stroke="currentColor" strokeWidth="1.2" opacity="0.5" /></svg>
+    ),
   },
   {
     title: "Intelligence Artificielle",
     description:
       "Intégrer l\u2019IA là où elle a un vrai impact — pas partout, mais au bon endroit.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4"><circle cx="12" cy="12" r="6" stroke="currentColor" strokeWidth="1.2" opacity="0.5" /><circle cx="12" cy="12" r="2" fill="currentColor" opacity="0.3" /><line x1="12" y1="2" x2="12" y2="6" stroke="currentColor" strokeWidth="1.2" opacity="0.3" /><line x1="12" y1="18" x2="12" y2="22" stroke="currentColor" strokeWidth="1.2" opacity="0.3" /></svg>
+    ),
   },
   {
     title: "Création Visuelle",
     description:
       "Logos, chartes graphiques, maquettes. Un design qui parle à votre cible sans en faire trop.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4"><rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" strokeWidth="1.2" opacity="0.5" /><circle cx="10" cy="10" r="2" fill="currentColor" opacity="0.3" /></svg>
+    ),
   },
   {
     title: "Sites & Applications",
     description:
       "Des sites et des applications métier qui font le job : rapides, clairs, pensés pour durer.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.2" opacity="0.5" /><line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" strokeWidth="1.2" opacity="0.3" /></svg>
+    ),
   },
   {
     title: "Développement SaaS",
     description:
       "De l\u2019idée au MVP. Architecture, développement, mise en production — on avance étape par étape.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4"><rect x="3" y="3" width="8" height="8" rx="1" stroke="currentColor" strokeWidth="1.2" opacity="0.5" /><rect x="13" y="3" width="8" height="8" rx="1" stroke="currentColor" strokeWidth="1.2" opacity="0.35" /><rect x="3" y="13" width="8" height="8" rx="1" stroke="currentColor" strokeWidth="1.2" opacity="0.35" /><rect x="13" y="13" width="8" height="8" rx="1" stroke="currentColor" strokeWidth="1.2" opacity="0.2" /></svg>
+    ),
   },
 ];
 
@@ -78,10 +93,15 @@ export default function Expertises() {
               transition={{ duration: 0.5, delay: 0.1 + i * 0.07 }}
               className="group py-7 border-b border-white/[0.06] hover:bg-white/[0.01] -mx-4 px-4 rounded-sm transition-colors duration-500"
             >
-              <h3 className="font-heading text-base md:text-lg font-semibold mb-2 group-hover:text-foreground transition-colors duration-300">
-                {item.title}
-              </h3>
-              <p className="text-muted/55 text-sm leading-relaxed">
+              <div className="flex items-center gap-2.5 mb-2">
+                <span className="text-primary-light/50 group-hover:text-primary-light/80 transition-colors duration-500">
+                  {item.icon}
+                </span>
+                <h3 className="font-heading text-base md:text-lg font-semibold group-hover:text-foreground transition-colors duration-300">
+                  {item.title}
+                </h3>
+              </div>
+              <p className="text-muted/55 text-sm leading-relaxed pl-[26px]">
                 {item.description}
               </p>
             </motion.div>

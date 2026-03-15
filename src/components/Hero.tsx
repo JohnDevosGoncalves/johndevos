@@ -4,17 +4,92 @@ import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import gsap from "gsap";
 
+function AbstractShape() {
+  return (
+    <svg
+      viewBox="0 0 400 400"
+      fill="none"
+      className="w-full h-full"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {/* Orbiting circles */}
+      <motion.circle
+        cx="200" cy="200" r="140"
+        stroke="rgba(59,130,246,0.08)"
+        strokeWidth="0.5"
+        initial={{ pathLength: 0, rotate: 0 }}
+        animate={{ pathLength: 1, rotate: 360 }}
+        transition={{ pathLength: { duration: 2, delay: 1 }, rotate: { duration: 40, repeat: Infinity, ease: "linear" } }}
+      />
+      <motion.circle
+        cx="200" cy="200" r="100"
+        stroke="rgba(6,182,212,0.06)"
+        strokeWidth="0.5"
+        initial={{ pathLength: 0, rotate: 0 }}
+        animate={{ pathLength: 1, rotate: -360 }}
+        transition={{ pathLength: { duration: 2.5, delay: 1.3 }, rotate: { duration: 50, repeat: Infinity, ease: "linear" } }}
+      />
+      <motion.circle
+        cx="200" cy="200" r="55"
+        stroke="rgba(139,92,246,0.05)"
+        strokeWidth="0.5"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 2, delay: 1.6 }}
+      />
+      {/* Small dots on orbits */}
+      <motion.circle
+        cx="340" cy="200" r="2.5"
+        fill="rgba(59,130,246,0.25)"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0, 1, 0.6] }}
+        transition={{ duration: 2, delay: 2 }}
+      />
+      <motion.circle
+        cx="200" cy="100" r="2"
+        fill="rgba(6,182,212,0.2)"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0, 1, 0.5] }}
+        transition={{ duration: 2, delay: 2.3 }}
+      />
+      <motion.circle
+        cx="145" cy="210" r="1.5"
+        fill="rgba(139,92,246,0.2)"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: [0, 1, 0.4] }}
+        transition={{ duration: 2, delay: 2.6 }}
+      />
+      {/* Crossing lines */}
+      <motion.line
+        x1="80" y1="320" x2="320" y2="80"
+        stroke="rgba(255,255,255,0.025)"
+        strokeWidth="0.5"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 3, delay: 1.5 }}
+      />
+      <motion.line
+        x1="60" y1="200" x2="340" y2="200"
+        stroke="rgba(255,255,255,0.015)"
+        strokeWidth="0.5"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 3, delay: 1.8 }}
+      />
+    </svg>
+  );
+}
+
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const decorRef = useRef<HTMLDivElement>(null);
+  const shapeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const el = containerRef.current;
-    const decor = decorRef.current;
+    const shape = shapeRef.current;
     if (!el) return;
 
     const ctx = gsap.context(() => {
-      // Main content fades on scroll
       gsap.to(el.querySelector(".hero-content"), {
         scrollTrigger: {
           trigger: el,
@@ -26,16 +101,16 @@ export default function Hero() {
         y: -80,
       });
 
-      // Decorative element moves slower (parallax)
-      if (decor) {
-        gsap.to(decor, {
+      if (shape) {
+        gsap.to(shape, {
           scrollTrigger: {
             trigger: el,
             start: "top top",
             end: "bottom top",
             scrub: 0.3,
           },
-          y: 150,
+          y: 100,
+          scale: 0.9,
           opacity: 0,
         });
       }
@@ -50,14 +125,12 @@ export default function Hero() {
       ref={containerRef}
       className="relative min-h-screen flex items-end pb-24 md:pb-32 overflow-hidden"
     >
-      {/* Decorative large letter — parallax */}
+      {/* Abstract geometric illustration — right side, parallax */}
       <div
-        ref={decorRef}
-        className="absolute right-[5%] md:right-[10%] bottom-[10%] md:bottom-[15%] pointer-events-none select-none"
+        ref={shapeRef}
+        className="absolute right-[-5%] md:right-[3%] top-[15%] md:top-[10%] w-[300px] h-[300px] md:w-[450px] md:h-[450px] lg:w-[500px] lg:h-[500px] pointer-events-none select-none opacity-70"
       >
-        <span className="font-heading text-[20rem] md:text-[28rem] lg:text-[34rem] font-bold leading-none text-white/[0.015] block">
-          J
-        </span>
+        <AbstractShape />
       </div>
 
       {/* Subtle horizon line */}

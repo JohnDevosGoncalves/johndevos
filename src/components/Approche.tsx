@@ -9,16 +9,35 @@ const steps = [
     num: "01",
     title: "Comprendre",
     text: "Votre vision, votre marché, vos contraintes. Je pose les bonnes questions pour cadrer le projet au plus juste — et surtout pour identifier ce qui compte vraiment.",
+    icon: (
+      <svg viewBox="0 0 32 32" fill="none" className="w-5 h-5">
+        <circle cx="16" cy="16" r="10" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+        <circle cx="16" cy="16" r="3" fill="currentColor" opacity="0.3" />
+      </svg>
+    ),
   },
   {
     num: "02",
     title: "Simplifier",
     text: "Chaque fonctionnalité est challengée. On garde l\u2019essentiel pour valider vite. Le reste viendra quand les premières bases seront solides.",
+    icon: (
+      <svg viewBox="0 0 32 32" fill="none" className="w-5 h-5">
+        <line x1="8" y1="12" x2="24" y2="12" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+        <line x1="12" y1="20" x2="20" y2="20" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+        <line x1="10" y1="16" x2="22" y2="16" stroke="currentColor" strokeWidth="1" opacity="0.25" />
+      </svg>
+    ),
   },
   {
     num: "03",
     title: "Lancer",
     text: "Un premier produit concret, en production, prêt à rencontrer ses utilisateurs. Votre Go to Market démarre ici.",
+    icon: (
+      <svg viewBox="0 0 32 32" fill="none" className="w-5 h-5">
+        <path d="M10 22L16 10L22 22" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+        <circle cx="16" cy="10" r="2" fill="currentColor" opacity="0.3" />
+      </svg>
+    ),
   },
 ];
 
@@ -89,9 +108,14 @@ export default function Approche() {
               </span>
 
               <div className="md:pt-2">
-                <h3 className="font-heading text-xl md:text-2xl font-semibold mb-3 group-hover:text-primary-light transition-colors duration-500">
-                  {step.title}
-                </h3>
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="text-primary-light/60 group-hover:text-primary-light/90 transition-colors duration-500">
+                    {step.icon}
+                  </span>
+                  <h3 className="font-heading text-xl md:text-2xl font-semibold group-hover:text-primary-light transition-colors duration-500">
+                    {step.title}
+                  </h3>
+                </div>
                 <p className="text-muted/70 leading-relaxed max-w-lg">
                   {step.text}
                 </p>
