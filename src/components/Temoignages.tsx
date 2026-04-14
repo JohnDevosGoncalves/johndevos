@@ -1,8 +1,10 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import { useInView, motion } from "framer-motion";
 import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface Testimonial {
   quote: string;
@@ -33,78 +35,143 @@ const testimonials: Testimonial[] = [
 
 export default function Temoignages() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
   const quoteMarkRef = useRef<HTMLSpanElement>(null);
+  const wordsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!sectionRef.current || !quoteMarkRef.current) return;
+    const section = sectionRef.current;
+    if (!section) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const ctx = gsap.context(() => {
-      gsap.to(quoteMarkRef.current, {
-        y: -60,
-        ease: "none",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 0.5,
-        },
+      // Parallax quotation mark
+      if (quoteMarkRef.current) {
+        gsap.to(quoteMarkRef.current, {
+          y: -100,
+          scale: 1.2,
+          ease: "none",
+          scrollTrigger: {
+            trigger: section,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.5,
+          },
+        });
+      }
+
+      // Word-by-word scroll reveal for featured quote
+      const words = section.querySelectorAll(".quote-word");
+      if (words.length > 0) {
+        gsap.fromTo(
+          words,
+          { opacity: 0.15 },
+          {
+            opacity: 1,
+            stagger: 0.03,
+            ease: "none",
+            scrollTrigger: {
+              trigger: wordsRef.current,
+              start: "top 75%",
+              end: "bottom 50%",
+              scrub: 1,
+            },
+          }
+        );
+      }
+
+      // Glassmorphism cards slide in
+      const cards = section.querySelectorAll(".temoignage-card");
+      cards.forEach((card, i) => {
+        gsap.fromTo(
+          card,
+          { opacity: 0, x: i % 2 === 0 ? -40 : 40 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.8,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 85%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
       });
-    }, sectionRef.current);
+
+      // Section title
+      const title = section.querySelector(".temoignages-title");
+      if (title) {
+        gsap.fromTo(
+          title,
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: title,
+              start: "top 85%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+      }
+    }, section);
 
     return () => ctx.revert();
   }, []);
 
+  // Split featured quote into words
+  const featuredWords = testimonials[0].quote.split(" ");
+
   return (
-    <section ref={sectionRef} className="relative py-28 md:py-40 px-6 md:px-12 lg:px-20 overflow-hidden">
+    <section ref={sectionRef} data-space-section="temoignages" className="relative py-28 md:py-40 px-6 md:px-12 lg:px-20 overflow-hidden">
       {/* Large decorative quotation mark — parallax */}
       <span
         ref={quoteMarkRef}
         aria-hidden="true"
-        className="absolute top-16 right-[5%] md:right-[12%] font-heading text-[16rem] md:text-[22rem] leading-none text-white/[0.06] select-none pointer-events-none"
+        className="absolute top-16 right-[5%] md:right-[12%] font-heading text-[16rem] md:text-[24rem] leading-none text-white/[0.04] select-none pointer-events-none will-change-transform"
       >
         &ldquo;
       </span>
 
       <div className="relative max-w-5xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7 }}
-          className="mb-16 max-w-2xl"
-        >
-          <h2 className="font-heading text-3xl md:text-4xl font-bold">
-            Ce qu&apos;ils en disent
-          </h2>
-        </motion.div>
+        <h2 className="temoignages-title font-heading text-3xl md:text-4xl font-bold mb-16">
+          Ce qu&apos;ils en disent
+        </h2>
 
         <div className="space-y-14">
-          {/* Featured testimonial */}
-          <motion.div
-            initial={{ opacity: 0, y: 25 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.15 }}
-          >
+          {/* Featured testimonial — word-by-word reveal */}
+          <div>
             <blockquote className="border-l-2 border-warm/60 pl-6 md:pl-10">
-              <p className="text-lg md:text-2xl text-foreground/85 leading-relaxed mb-6 max-w-3xl font-light tracking-[-0.01em]">
-                &ldquo;{testimonials[0].quote}&rdquo;
-              </p>
+              <div
+                ref={wordsRef}
+                className="text-lg md:text-2xl text-foreground/85 leading-relaxed mb-6 max-w-3xl font-light tracking-[-0.01em]"
+              >
+                &ldquo;
+                {featuredWords.map((word, i) => (
+                  <span key={i} className="quote-word inline-block mr-[0.3em]" style={{ opacity: 0.15 }}>
+                    {word}
+                  </span>
+                ))}
+                &rdquo;
+              </div>
               <footer className="text-sm text-muted/80">
                 <span className="text-foreground/90 font-medium">{testimonials[0].name}</span>
                 <span className="mx-2 text-white/30" aria-hidden="true">—</span>
                 {testimonials[0].role}
               </footer>
             </blockquote>
-          </motion.div>
+          </div>
 
-          {/* Other testimonials */}
-          <div className="grid md:grid-cols-2 gap-10 md:gap-16 pt-2">
-            {testimonials.slice(1).map((t, i) => (
-              <motion.div
+          {/* Other testimonials — glassmorphism cards */}
+          <div className="grid md:grid-cols-2 gap-6 md:gap-8 pt-2">
+            {testimonials.slice(1).map((t) => (
+              <div
                 key={t.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: 0.35 + i * 0.12 }}
+                className="temoignage-card glass rounded-xl p-6 md:p-8"
               >
                 <blockquote>
                   <p className="text-muted/80 leading-relaxed mb-4 text-[15px]">
@@ -116,7 +183,7 @@ export default function Temoignages() {
                     <span className="text-muted/80">{t.role}</span>
                   </footer>
                 </blockquote>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>

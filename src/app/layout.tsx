@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
+import { Inter, Sora } from "next/font/google";
 import { LocalBusinessJsonLd, FaqJsonLd, WebSiteJsonLd } from "@/components/JsonLd";
+import { CursorProvider } from "@/lib/cursor-context";
 import "./globals.css";
 
 const inter = Inter({
@@ -8,9 +9,10 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+const sora = Sora({
+  variable: "--font-sora",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -86,9 +88,34 @@ export default function RootLayout({
         <WebSiteJsonLd />
       </head>
       <body
-        className={`${inter.variable} ${spaceGrotesk.variable} antialiased`}
+        className={`${inter.variable} ${sora.variable} antialiased`}
       >
-        {children}
+        <CursorProvider>
+          {/* SVG Liquid Distortion Filter — used by section transitions */}
+          <svg
+            style={{ position: "absolute", width: 0, height: 0 }}
+            aria-hidden="true"
+          >
+            <defs>
+              <filter id="liquid-distortion">
+                <feTurbulence
+                  type="fractalNoise"
+                  baseFrequency="0"
+                  numOctaves="3"
+                  result="noise"
+                />
+                <feDisplacementMap
+                  in="SourceGraphic"
+                  in2="noise"
+                  scale="0"
+                  xChannelSelector="R"
+                  yChannelSelector="G"
+                />
+              </filter>
+            </defs>
+          </svg>
+          {children}
+        </CursorProvider>
       </body>
     </html>
   );

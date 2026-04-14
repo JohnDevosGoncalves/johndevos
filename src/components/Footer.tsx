@@ -1,11 +1,48 @@
 "use client";
 
-import { Linkedin } from "lucide-react";
+import { useRef, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Linkedin, ArrowUp } from "lucide-react";
 import Image from "next/image";
 
+gsap.registerPlugin(ScrollTrigger);
+
 export default function Footer() {
+  const footerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const footer = footerRef.current;
+    if (!footer) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        footer,
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: footer,
+            start: "top 95%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+    }, footer);
+
+    return () => ctx.revert();
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <footer className="border-t border-white/[0.10] py-12 px-6 md:px-12 lg:px-20">
+    <footer ref={footerRef} className="border-t border-white/[0.10] py-12 px-6 md:px-12 lg:px-20">
       <div className="max-w-5xl mx-auto">
         <div className="flex flex-col md:flex-row items-start justify-between gap-8 mb-10">
           <div>
@@ -51,6 +88,16 @@ export default function Footer() {
               </a>
             </div>
           </nav>
+
+          {/* Scroll to top button */}
+          <button
+            onClick={scrollToTop}
+            data-magnetic="0.3"
+            className="hidden md:flex items-center justify-center w-10 h-10 rounded-full border border-white/[0.12] text-muted/60 hover:text-foreground hover:border-white/[0.25] transition-all duration-300"
+            aria-label="Retour en haut"
+          >
+            <ArrowUp size={16} />
+          </button>
         </div>
 
         <div className="pt-6 border-t border-white/[0.10] flex flex-col sm:flex-row items-center justify-between gap-3">

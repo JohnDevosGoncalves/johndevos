@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
@@ -15,10 +15,29 @@ const navLinks = [
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 50);
+
+      // Hide on scroll down, show on scroll up
+      if (y > lastScrollY.current && y > 200) {
+        setHidden(true);
+      } else {
+        setHidden(false);
+      }
+      lastScrollY.current = y;
+
+      // Page scroll progress
+      const docH = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(docH > 0 ? y / docH : 0);
+    };
+
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -27,8 +46,8 @@ export default function Navbar() {
     <motion.nav
       aria-label="Navigation principale"
       initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
+      animate={{ y: hidden && !mobileOpen ? -100 : 0 }}
+      transition={{ duration: 0.4, ease: "easeInOut" }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${
         scrolled
           ? "bg-background/80 backdrop-blur-2xl border-b border-white/[0.06]"
@@ -62,9 +81,10 @@ export default function Navbar() {
           ))}
           <a
             href="#contact"
+            data-magnetic="0.15"
             className="text-[13px] text-foreground/80 hover:text-foreground transition-colors duration-300 ml-2"
           >
-            Contact &rarr;
+            Appel gratuit &rarr;
           </a>
         </div>
 
@@ -78,6 +98,12 @@ export default function Navbar() {
           {mobileOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
+
+      {/* Section progress bar */}
+      <div
+        className="nav-progress"
+        style={{ width: `${scrollProgress * 100}%` }}
+      />
 
       {/* Mobile menu */}
       <AnimatePresence>
@@ -105,7 +131,7 @@ export default function Navbar() {
                 onClick={() => setMobileOpen(false)}
                 className="text-base text-foreground/80 mt-2"
               >
-                Contact &rarr;
+                Appel gratuit &rarr;
               </a>
             </div>
           </motion.div>

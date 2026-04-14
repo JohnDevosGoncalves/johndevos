@@ -1,9 +1,12 @@
 "use client";
 
-import { useRef } from "react";
-import { useInView, motion } from "framer-motion";
+import { useRef, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 import { projects, type Project } from "@/lib/projects";
+
+gsap.registerPlugin(ScrollTrigger);
 
 type VisualType = Project["visual"];
 
@@ -15,7 +18,6 @@ function ProjectVisual({ type }: { type: VisualType }) {
         <rect x="10" y="12" width="20" height="38" rx="2" stroke="currentColor" strokeWidth="0.5" opacity="0.15" />
         <line x1="35" y1="18" x2="68" y2="18" stroke="currentColor" strokeWidth="0.5" opacity="0.15" />
         <line x1="35" y1="28" x2="60" y2="28" stroke="currentColor" strokeWidth="0.5" opacity="0.1" />
-        <line x1="35" y1="38" x2="55" y2="38" stroke="currentColor" strokeWidth="0.5" opacity="0.1" />
         <circle cx="42" cy="48" r="3" stroke="currentColor" strokeWidth="0.5" opacity="0.2" />
       </svg>
     ),
@@ -34,11 +36,9 @@ function ProjectVisual({ type }: { type: VisualType }) {
         <line x1="5" y1="14" x2="75" y2="14" stroke="currentColor" strokeWidth="0.5" opacity="0.1" />
         <circle cx="10" cy="9.5" r="1.5" fill="currentColor" opacity="0.15" />
         <circle cx="15" cy="9.5" r="1.5" fill="currentColor" opacity="0.1" />
-        <circle cx="20" cy="9.5" r="1.5" fill="currentColor" opacity="0.08" />
         <rect x="10" y="20" width="60" height="12" rx="2" fill="currentColor" opacity="0.03" />
         <rect x="10" y="38" width="18" height="10" rx="2" fill="currentColor" opacity="0.03" />
         <rect x="32" y="38" width="18" height="10" rx="2" fill="currentColor" opacity="0.03" />
-        <rect x="54" y="38" width="16" height="10" rx="2" fill="currentColor" opacity="0.03" />
       </svg>
     ),
     brand: (
@@ -46,9 +46,6 @@ function ProjectVisual({ type }: { type: VisualType }) {
         <circle cx="30" cy="30" r="16" stroke="currentColor" strokeWidth="0.5" opacity="0.2" />
         <circle cx="50" cy="30" r="16" stroke="currentColor" strokeWidth="0.5" opacity="0.15" />
         <rect x="22" y="52" width="36" height="3" rx="1.5" fill="currentColor" opacity="0.06" />
-        {[0, 1, 2, 3].map((i) => (
-          <circle key={i} cx={25 + i * 10} cy="58" r="2.5" fill="currentColor" opacity={0.06 + i * 0.02} />
-        ))}
       </svg>
     ),
     strategy: (
@@ -58,10 +55,6 @@ function ProjectVisual({ type }: { type: VisualType }) {
         <circle cx="65" cy="30" r="6" stroke="currentColor" strokeWidth="0.5" opacity="0.2" />
         <line x1="21" y1="30" x2="34" y2="30" stroke="currentColor" strokeWidth="0.5" opacity="0.15" />
         <line x1="46" y1="30" x2="59" y2="30" stroke="currentColor" strokeWidth="0.5" opacity="0.15" />
-        <circle cx="15" cy="30" r="2" fill="currentColor" opacity="0.1" />
-        <circle cx="40" cy="30" r="2" fill="currentColor" opacity="0.15" />
-        <circle cx="65" cy="30" r="2" fill="currentColor" opacity="0.2" />
-        <path d="M10 45 L40 42 L70 45" stroke="currentColor" strokeWidth="0.5" opacity="0.08" />
       </svg>
     ),
   };
@@ -70,46 +63,109 @@ function ProjectVisual({ type }: { type: VisualType }) {
 
 export default function Realisations() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  const titleRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const ctx = gsap.context(() => {
+      // Massive title scale-down reveal
+      if (titleRef.current) {
+        gsap.fromTo(
+          titleRef.current,
+          { scale: 2.5, opacity: 0 },
+          {
+            scale: 1,
+            opacity: 1,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: titleRef.current,
+              start: "top 85%",
+              end: "top 40%",
+              scrub: 1,
+            },
+          }
+        );
+      }
+
+      // Scale cards on scroll approach
+      const cards = gsap.utils.toArray<HTMLElement>(".project-card");
+      cards.forEach((card) => {
+        gsap.fromTo(
+          card,
+          { scale: 0.88, opacity: 0.5 },
+          {
+            scale: 1,
+            opacity: 1,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 90%",
+              end: "top 50%",
+              scrub: 0.5,
+            },
+          }
+        );
+      });
+    }, section);
+
+    return () => ctx.revert();
+  }, []);
+
+  // 3D tilt on hover
+  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    const rotateX = (y - 0.5) * -6;
+    const rotateY = (x - 0.5) * 6;
+    e.currentTarget.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.01)`;
+  };
+
+  const handleMouseLeave = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.currentTarget.style.transform = "perspective(1000px) rotateX(0) rotateY(0) scale(1)";
+  };
 
   return (
     <section
-      id="realisations"
+      id="realisations" data-space-section="realisations"
       ref={sectionRef}
       className="relative py-28 md:py-40 px-6 md:px-12 lg:px-20"
     >
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.03] to-transparent pointer-events-none" />
 
       <div className="relative max-w-5xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7 }}
-          className="mb-16 max-w-2xl"
-        >
-          <h2 className="font-heading text-3xl md:text-4xl font-bold mb-5">
-            Quelques projets
+        {/* Massive title */}
+        <div className="mb-16 overflow-hidden">
+          <h2
+            ref={titleRef}
+            className="font-heading text-4xl md:text-6xl lg:text-7xl font-bold mb-5 will-change-transform origin-left"
+          >
+            Des résultats concrets.
           </h2>
-          <p className="text-muted/80 text-lg leading-relaxed">
-            Des collaborations récentes — chacune avec ses enjeux et son
-            contexte.
+          <p className="text-muted/80 text-lg leading-relaxed max-w-lg">
+            Chaque projet commence par un problème réel et finit par un outil en production.
+            Voici comment j&apos;ai aidé d&apos;autres entreprises à accélérer.
           </p>
-        </motion.div>
+        </div>
 
         <div className="space-y-0 mb-10">
-          {projects.slice(0, 5).map((project, i) => (
-            <motion.a
+          {projects.slice(0, 5).map((project) => (
+            <a
               key={project.title}
               href={project.url}
               target="_blank"
               rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.1 + i * 0.08 }}
+              data-cursor="view"
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
               aria-label={`${project.title} — ${project.category}`}
-              className="group grid grid-cols-[1fr] md:grid-cols-[80px_140px_1fr_auto] gap-3 md:gap-6 items-center py-7 border-b border-white/[0.12] first:border-t first:border-white/[0.12] cursor-pointer hover:bg-white/[0.04] transition-colors duration-500 -mx-4 px-4 rounded-sm"
+              className="project-card group grid grid-cols-[1fr] md:grid-cols-[80px_140px_1fr_auto] gap-3 md:gap-6 items-center py-7 border-b border-white/[0.12] first:border-t first:border-white/[0.12] hover:bg-white/[0.04] transition-all duration-500 -mx-4 px-4 rounded-sm will-change-transform"
+              style={{ transition: "transform 0.2s ease, background 0.5s" }}
             >
-              {/* Small abstract visual */}
               <div className="hidden md:block w-[80px] h-[60px] text-primary-light/80 group-hover:text-primary-light transition-colors duration-500" aria-hidden="true">
                 <ProjectVisual type={project.visual} />
               </div>
@@ -145,24 +201,20 @@ export default function Realisations() {
                 className="text-muted/40 group-hover:text-primary-light group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-300 hidden md:block"
                 aria-hidden="true"
               />
-            </motion.a>
+            </a>
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="text-center"
-        >
+        <div className="text-center">
           <a
             href="/projets"
+            data-magnetic="0.15"
             className="group inline-flex items-center gap-2 text-sm text-muted/80 hover:text-primary-light font-medium transition-colors duration-300"
           >
             Voir tous les projets
             <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform duration-300" />
           </a>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

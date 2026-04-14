@@ -1,8 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { useInView, motion, AnimatePresence } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Plus } from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface FaqEntry {
   question: string;
@@ -46,6 +49,19 @@ function FaqItem({
   isOpen: boolean;
   onToggle: () => void;
 }) {
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = contentRef.current;
+    if (!el) return;
+
+    if (isOpen) {
+      gsap.to(el, { height: "auto", opacity: 1, duration: 0.4, ease: "power2.out" });
+    } else {
+      gsap.to(el, { height: 0, opacity: 0, duration: 0.3, ease: "power2.in" });
+    }
+  }, [isOpen]);
+
   return (
     <div className="border-b border-background/[0.08]">
       <button
@@ -56,67 +72,101 @@ function FaqItem({
         <span className="font-heading text-base md:text-lg font-medium text-background/90 group-hover:text-background transition-colors">
           {faq.question}
         </span>
-        <motion.div
-          animate={{ rotate: isOpen ? 45 : 0 }}
-          transition={{ duration: 0.2 }}
-          className="shrink-0 mt-1"
+        <div
+          className="shrink-0 mt-1 transition-transform duration-300"
+          style={{ transform: isOpen ? "rotate(45deg)" : "rotate(0)" }}
           aria-hidden="true"
         >
           <Plus size={16} className="text-lightmuted" />
-        </motion.div>
+        </div>
       </button>
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="overflow-hidden"
-          >
-            <p className="text-lightmuted text-sm leading-relaxed pb-6 pr-12">
-              {faq.answer}
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div
+        ref={contentRef}
+        className="overflow-hidden"
+        style={{ height: 0, opacity: 0 }}
+      >
+        <p className="text-lightmuted text-sm leading-relaxed pb-6 pr-12">
+          {faq.answer}
+        </p>
+      </div>
     </div>
   );
 }
 
 export default function Faq() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const ctx = gsap.context(() => {
+      // Title wipe reveal (clip-path left to right)
+      const title = section.querySelector(".faq-title");
+      if (title) {
+        gsap.fromTo(
+          title,
+          { clipPath: "inset(0 100% 0 0)" },
+          {
+            clipPath: "inset(0 0% 0 0)",
+            duration: 0.8,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: title,
+              start: "top 85%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+      }
+
+      // FAQ items stagger
+      const items = section.querySelectorAll(".faq-item-wrapper");
+      items.forEach((item, i) => {
+        gsap.fromTo(
+          item,
+          { opacity: 0, y: 15 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            delay: i * 0.06,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: items[0],
+              start: "top 85%",
+              toggleActions: "play none none none",
+            },
+          }
+        );
+      });
+    }, section);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section ref={sectionRef} className="py-28 md:py-40 px-6 md:px-12 lg:px-20 bg-lightbg">
+    <section ref={sectionRef} data-space-section="faq" className="py-28 md:py-40 px-6 md:px-12 lg:px-20 bg-lightbg">
       <div className="max-w-3xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7 }}
-          className="mb-12"
-        >
-          <h2 className="font-heading text-3xl md:text-4xl font-bold text-background">
+        <div className="mb-12">
+          <h2 className="faq-title font-heading text-3xl md:text-4xl font-bold text-background">
             Questions fréquentes
           </h2>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.15 }}
-        >
+        <div>
           {faqs.map((faq, i) => (
-            <FaqItem
-              key={i}
-              faq={faq}
-              isOpen={openIndex === i}
-              onToggle={() => setOpenIndex(openIndex === i ? null : i)}
-            />
+            <div key={i} className="faq-item-wrapper">
+              <FaqItem
+                faq={faq}
+                isOpen={openIndex === i}
+                onToggle={() => setOpenIndex(openIndex === i ? null : i)}
+              />
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );
