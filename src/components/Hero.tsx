@@ -103,6 +103,8 @@ export default function Hero() {
     <section
       id="accueil" data-space-section="hero"
       ref={containerRef}
+      role="banner"
+      aria-label="Accueil — Lancez votre activité 2x plus vite"
       className="relative min-h-screen flex items-end pb-24 md:pb-32 overflow-hidden"
     >
       {/* Abstract geometric shape — right side */}

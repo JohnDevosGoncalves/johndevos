@@ -59,12 +59,18 @@ export default function SpaceScene() {
       : Math.min(window.devicePixelRatio || 1, 2);
     const starCount = isMobile ? STAR_COUNT_MOBILE : STAR_COUNT;
 
-    // ── Renderer ──
-    const renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: false,
-      powerPreference: "high-performance",
-    });
+    // ── Renderer (with error boundary) ──
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: false,
+        powerPreference: "high-performance",
+      });
+    } catch (e) {
+      console.warn("[SpaceScene] WebGL renderer failed to initialize:", e);
+      return; // Graceful fallback: background shows through
+    }
     renderer.setPixelRatio(dpr);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x000000, 0);
@@ -178,12 +184,16 @@ export default function SpaceScene() {
       nebulaGroups.push(points);
     }
 
-    // ── Meteor Shower (TechStack zone, desktop only) ──
+    // ── Meteor Shower (TechStack zone, desktop only, LAZY LOADED) ──
     let meteorPositions: Float32Array | null = null;
     let meteorPoints: THREE.Points | null = null;
     const techBiome = BIOMES.find((b) => b.isMeteorShower);
+    let meteorLoaded = false;
 
-    if (!isMobile && techBiome) {
+    function loadMeteors() {
+      if (meteorLoaded || isMobile || !techBiome) return;
+      meteorLoaded = true;
+
       const geo = new THREE.BufferGeometry();
       meteorPositions = new Float32Array(METEOR_COUNT * 3);
       const mSizes = new Float32Array(METEOR_COUNT);
@@ -207,7 +217,7 @@ export default function SpaceScene() {
         fragmentShader: starFragmentShader,
         uniforms: {
           uTime: { value: 0 },
-          uWarpFactor: { value: 0.3 }, // always slightly warped
+          uWarpFactor: { value: 0.3 },
           uPixelRatio: { value: dpr },
           uCameraForward: { value: new THREE.Vector3(0, 0, -1) },
           uColor: { value: techBiome.color.clone() },
@@ -304,13 +314,17 @@ export default function SpaceScene() {
       // Update uniforms
       starUniforms.uTime.value = elapsed;
 
-      // Lazy-load biomes as camera approaches (desktop only)
+      // Lazy-load biomes + meteors as camera approaches (desktop only)
       if (!isMobile) {
         const camZ = currentCamPos.z;
         for (const biome of BIOMES) {
           if (!loadedBiomes.has(biome.id) && camZ < biome.startZ + BIOME_LOAD_DISTANCE) {
             loadBiome(biome);
           }
+        }
+        // Lazy-load meteors
+        if (!meteorLoaded && techBiome && camZ < techBiome.startZ + BIOME_LOAD_DISTANCE) {
+          loadMeteors();
         }
       }
 
@@ -354,10 +368,27 @@ export default function SpaceScene() {
       renderer.render(scene, camera);
     };
 
+    // ── FPS Cap (eco-design: 60fps max, saves energy on 120/144Hz displays) ──
+    gsap.ticker.fps(60);
     gsap.ticker.add(onTick);
+
+    // ── Page Visibility API (eco-design: pause rendering when tab hidden) ──
+    let isVisible = true;
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        isVisible = false;
+        gsap.ticker.remove(onTick);
+      } else {
+        isVisible = true;
+        lastTime = performance.now(); // prevent huge dt jump
+        gsap.ticker.add(onTick);
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
 
     // ── Resize ──
     const onResize = () => {
+      if (!isVisible) return; // don't resize when hidden
       const w = window.innerWidth;
       const h = window.innerHeight;
       camera.aspect = w / h;
@@ -371,13 +402,18 @@ export default function SpaceScene() {
       gsap.ticker.remove(onTick);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("space-liftoff", onLiftoff);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
 
-      // Dispose everything
+      // Dispose everything safely
       scene.traverse((obj) => {
-        if (obj instanceof THREE.Points) {
-          obj.geometry.dispose();
-          if (obj.material instanceof THREE.Material) {
-            obj.material.dispose();
+        if (obj instanceof THREE.Points || obj instanceof THREE.Mesh) {
+          if (obj.geometry) obj.geometry.dispose();
+          if (obj.material) {
+            if (Array.isArray(obj.material)) {
+              obj.material.forEach((m) => m.dispose());
+            } else {
+              obj.material.dispose();
+            }
           }
         }
       });
@@ -393,7 +429,9 @@ export default function SpaceScene() {
       ref={containerRef}
       className="fixed inset-0 pointer-events-none"
       style={{ zIndex: 1 }}
+      role="presentation"
       aria-hidden="true"
+      aria-label="Animated space background with stars and nebulae"
     />
   );
 }
