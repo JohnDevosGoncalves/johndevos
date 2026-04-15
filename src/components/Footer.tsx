@@ -3,11 +3,67 @@
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Linkedin, ArrowUp, Leaf } from "lucide-react";
+import { Linkedin, ArrowUp } from "lucide-react";
 import Image from "next/image";
-import Script from "next/script";
 
 gsap.registerPlugin(ScrollTrigger);
+
+/* ─── Static Carbon Badge (zero JS, zero external script) ─── */
+function CarbonBadge() {
+  return (
+    <a
+      href="https://www.websitecarbon.com/website/johndevos-fr/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="carbon-badge group"
+      aria-label="Ce site émet 0.04g de CO2 par visite — Note A+ sur Website Carbon"
+    >
+      {/* Leaf SVG icon (inline, 160 bytes) */}
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        className="w-4 h-4 shrink-0 text-[#00d4aa]/70 group-hover:text-[#00d4aa] transition-colors duration-300"
+        aria-hidden="true"
+      >
+        <path
+          d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66L7 19c2-2 4-4 8-5 0 0-2 4-4 7l1.9.66C14.1 18.17 17 12 17 8z"
+          fill="currentColor"
+          opacity="0.9"
+        />
+        <path
+          d="M17 8c2-4 4-6 4-6s-6 2-10 6"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          opacity="0.5"
+        />
+      </svg>
+
+      {/* Content */}
+      <div className="flex flex-col gap-0.5">
+        <div className="flex items-center gap-2">
+          <span className="text-[13px] font-semibold text-foreground/80 group-hover:text-foreground transition-colors">
+            0.04g
+          </span>
+          <span className="text-[10px] text-muted/60 uppercase tracking-wider">
+            CO₂/view
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-muted/50 uppercase tracking-wider">
+            Rating
+          </span>
+          <span className="carbon-badge-grade text-[11px] font-bold tracking-wide">
+            A+
+          </span>
+          <span className="text-[10px] text-muted/40 group-hover:text-muted/60 transition-colors">
+            View report →
+          </span>
+        </div>
+      </div>
+    </a>
+  );
+}
 
 export default function Footer() {
   const footerRef = useRef<HTMLElement>(null);
@@ -101,12 +157,14 @@ export default function Footer() {
           </button>
         </div>
 
-        {/* ── Eco-conception banner + Website Carbon Badge ── */}
+        {/* ── Eco-conception banner + Static Carbon Badge ── */}
         <div className="py-6 border-t border-white/[0.10] mb-6">
           <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-10">
             {/* Eco message */}
             <div className="flex items-start gap-3 max-w-md">
-              <Leaf size={16} className="text-primary-light/70 shrink-0 mt-0.5" />
+              <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4 text-primary-light/70 shrink-0 mt-0.5" aria-hidden="true">
+                <path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66L7 19c2-2 4-4 8-5 0 0-2 4-4 7l1.9.66C14.1 18.17 17 12 17 8z" fill="currentColor" opacity="0.9" />
+              </svg>
               <p className="text-xs text-muted/70 leading-relaxed">
                 <span className="text-foreground/80 font-medium">Code frugal, impact maximal.</span>
                 {" "}Ce site propulse une navigation 3D immersive avec un transfert de données
@@ -115,10 +173,8 @@ export default function Footer() {
               </p>
             </div>
 
-            {/* Website Carbon Badge (dark theme) */}
-            <div className="carbon-badge-wrapper shrink-0">
-              <div id="wcb" className="carbonbadge wcb-d" />
-            </div>
+            {/* Static Carbon Badge — zero JS, zero external request */}
+            <CarbonBadge />
           </div>
         </div>
 
@@ -137,12 +193,6 @@ export default function Footer() {
           </div>
         </div>
       </div>
-
-      {/* Website Carbon Calculator script (loaded defer, non-blocking) */}
-      <Script
-        src="https://unpkg.com/website-carbon-badges@1.1.3/b.min.js"
-        strategy="lazyOnload"
-      />
     </footer>
   );
 }

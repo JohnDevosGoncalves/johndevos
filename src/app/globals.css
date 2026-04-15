@@ -496,32 +496,31 @@ h1, h2, h3, h4, h5, h6 {
   will-change: width;
 }
 
-/* ─── Website Carbon Badge (dark theme override) ─── */
-.carbon-badge-wrapper {
-  min-width: 200px;
+/* ─── Static Carbon Badge ─── */
+.carbon-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(0, 212, 170, 0.1);
+  background: rgba(0, 212, 170, 0.03);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  text-decoration: none;
+  transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+  white-space: nowrap;
 }
 
-.carbon-badge-wrapper #wcb {
-  font-size: 11px !important;
-  line-height: 1.4 !important;
+.carbon-badge:hover {
+  border-color: rgba(0, 212, 170, 0.25);
+  background: rgba(0, 212, 170, 0.06);
+  box-shadow: 0 0 20px rgba(0, 212, 170, 0.08);
 }
 
-.carbon-badge-wrapper #wcb.wcb-d {
-  color: var(--color-muted) !important;
-}
-
-.carbon-badge-wrapper #wcb.wcb-d a {
-  color: var(--color-primary-light) !important;
-  text-decoration: none !important;
-}
-
-.carbon-badge-wrapper #wcb.wcb-d a:hover {
-  color: var(--color-foreground) !important;
-}
-
-.carbon-badge-wrapper #wcb p {
-  margin: 0 !important;
-  padding: 0 !important;
+.carbon-badge-grade {
+  color: #00d4aa;
+  text-shadow: 0 0 8px rgba(0, 212, 170, 0.4);
 }
 
 /* ─── ECO Toggle Button ─── */
