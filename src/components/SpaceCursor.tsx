@@ -4,6 +4,7 @@ import { useEffect, useRef, useCallback } from "react";
 
 const TRAIL_POOL = 50;
 const TRAIL_LIFETIME = 0.5; // seconds
+const IDLE_FRAMES_BEFORE_PAUSE = 30; // pause trail after ~0.5s of no movement
 
 interface TrailParticle {
   x: number;
@@ -25,6 +26,8 @@ export default function SpaceCursor() {
   const trailPool = useRef<TrailParticle[]>([]);
   const trailIndex = useRef(0);
   const isExpanded = useRef(false);
+  const idleFrames = useRef(0);
+  const hasActiveParticles = useRef(false);
 
   // Initialize trail pool
   useEffect(() => {
@@ -58,42 +61,52 @@ export default function SpaceCursor() {
       p.age = 0;
       p.alive = true;
       trailIndex.current++;
+      idleFrames.current = 0;
+    } else {
+      idleFrames.current++;
     }
 
     prevMouse.current.x = mouse.current.x;
     prevMouse.current.y = mouse.current.y;
 
-    // Draw trail
-    const canvas = trailCanvasRef.current;
-    if (canvas) {
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const dt = 1 / 60; // approximate
+    // Check if any particles are still alive
+    hasActiveParticles.current = trailPool.current.some((p) => p.alive);
 
-        for (const p of trailPool.current) {
-          if (!p.alive) continue;
-          p.age += dt;
-          if (p.age > TRAIL_LIFETIME) {
-            p.alive = false;
-            continue;
+    // Skip trail canvas draw if idle AND no active particles (eco: save GPU)
+    const shouldDrawTrail = hasActiveParticles.current || idleFrames.current < IDLE_FRAMES_BEFORE_PAUSE;
+
+    if (shouldDrawTrail) {
+      const canvas = trailCanvasRef.current;
+      if (canvas) {
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const dt = 1 / 60;
+
+          for (const p of trailPool.current) {
+            if (!p.alive) continue;
+            p.age += dt;
+            if (p.age > TRAIL_LIFETIME) {
+              p.alive = false;
+              continue;
+            }
+
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vx *= 0.96;
+            p.vy *= 0.96;
+
+            const life = 1 - p.age / TRAIL_LIFETIME;
+            const alpha = life * 0.6;
+            const size = life * 2.5 + 0.5;
+
+            ctx.beginPath();
+            ctx.arc(p.x * (canvas.width / window.innerWidth),
+                    p.y * (canvas.height / window.innerHeight),
+                    size, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(0, 212, 170, ${alpha})`;
+            ctx.fill();
           }
-
-          p.x += p.vx;
-          p.y += p.vy;
-          p.vx *= 0.96;
-          p.vy *= 0.96;
-
-          const life = 1 - p.age / TRAIL_LIFETIME;
-          const alpha = life * 0.6;
-          const size = life * 2.5 + 0.5;
-
-          ctx.beginPath();
-          ctx.arc(p.x * (canvas.width / window.innerWidth),
-                  p.y * (canvas.height / window.innerHeight),
-                  size, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(0, 212, 170, ${alpha})`;
-          ctx.fill();
         }
       }
     }

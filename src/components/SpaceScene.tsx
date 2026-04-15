@@ -1,7 +1,23 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import * as THREE from "three";
+// ── TREE-SHAKING: Granular Three.js imports (~80KB instead of ~600KB) ──
+import {
+  WebGLRenderer,
+  Scene,
+  PerspectiveCamera,
+  BufferGeometry,
+  Float32BufferAttribute,
+  Points,
+  PointsMaterial,
+  ShaderMaterial,
+  AdditiveBlending,
+  Vector3,
+  Color,
+  CatmullRomCurve3,
+  Mesh,
+  Material,
+} from "three";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useSpace } from "@/lib/space-context";
@@ -30,6 +46,38 @@ import {
 
 gsap.registerPlugin(ScrollTrigger);
 
+/* ─── Battery / Low-Power detection ─── */
+interface BatteryManager extends EventTarget {
+  charging: boolean;
+  level: number;
+}
+
+async function detectLowPower(): Promise<boolean> {
+  // 1. Check prefers-reduced-motion
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return true;
+
+  // 2. Battery API: low battery + not charging → low power
+  try {
+    if ("getBattery" in navigator) {
+      const battery = await (navigator as unknown as { getBattery(): Promise<BatteryManager> }).getBattery();
+      if (!battery.charging && battery.level < 0.2) return true;
+    }
+  } catch {
+    // Battery API not available — continue
+  }
+
+  // 3. Device memory API (Chrome): < 4GB = constrained
+  if ("deviceMemory" in navigator) {
+    const mem = (navigator as unknown as { deviceMemory: number }).deviceMemory;
+    if (mem < 4) return true;
+  }
+
+  // 4. Hardware concurrency: < 4 cores = constrained
+  if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) return true;
+
+  return false;
+}
+
 export default function SpaceScene() {
   const containerRef = useRef<HTMLDivElement>(null);
   const spaceState = useSpace();
@@ -38,38 +86,53 @@ export default function SpaceScene() {
     if (!containerRef.current) return;
     if (typeof window === "undefined") return;
 
-    // ── Detect capabilities ──
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const isMobile = window.matchMedia("(pointer: coarse)").matches;
 
     // WebGL check
     const testCanvas = document.createElement("canvas");
     const gl = testCanvas.getContext("webgl2") || testCanvas.getContext("webgl");
-    if (!gl) {
-      // No WebGL → skip 3D entirely, background shows through
-      return;
-    }
-
-    if (prefersReducedMotion) return;
+    if (!gl || prefersReducedMotion) return;
 
     const container = containerRef.current;
-    // Cap DPR aggressively on mobile for performance
+
+    // ── Adaptive Quality (runs async, degrades later if needed) ──
+    let lowPowerMode = false;
+    let targetFps = 60;
+
+    detectLowPower().then((isLow) => {
+      if (isLow) {
+        lowPowerMode = true;
+        targetFps = 30;
+        gsap.ticker.fps(30);
+        // Reduce star count live: hide half by moving off-screen
+        if (starPositions) {
+          for (let i = Math.floor(starCount / 2); i < starCount; i++) {
+            starPositions[i * 3 + 2] = 99999; // move far away
+          }
+          const posAttr = starGeometry.getAttribute("position");
+          if (posAttr) (posAttr as { needsUpdate: boolean }).needsUpdate = true;
+        }
+      }
+    });
+
+    // DPR capping
     const dpr = isMobile
       ? Math.min(window.devicePixelRatio || 1, 1.5)
       : Math.min(window.devicePixelRatio || 1, 2);
     const starCount = isMobile ? STAR_COUNT_MOBILE : STAR_COUNT;
 
-    // ── Renderer (with error boundary) ──
-    let renderer: THREE.WebGLRenderer;
+    // ── Renderer ──
+    let renderer: WebGLRenderer;
     try {
-      renderer = new THREE.WebGLRenderer({
+      renderer = new WebGLRenderer({
         alpha: true,
         antialias: false,
         powerPreference: "high-performance",
       });
     } catch (e) {
-      console.warn("[SpaceScene] WebGL renderer failed to initialize:", e);
-      return; // Graceful fallback: background shows through
+      console.warn("[SpaceScene] WebGL init failed:", e);
+      return;
     }
     renderer.setPixelRatio(dpr);
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -77,8 +140,8 @@ export default function SpaceScene() {
     container.appendChild(renderer.domElement);
 
     // ── Scene + Camera ──
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
+    const scene = new Scene();
+    const camera = new PerspectiveCamera(
       CAMERA_FOV,
       window.innerWidth / window.innerHeight,
       CAMERA_NEAR,
@@ -86,10 +149,10 @@ export default function SpaceScene() {
     );
 
     // ── Spline Path ──
-    const curve = new THREE.CatmullRomCurve3(SPLINE_POINTS, false, "catmullrom", 0.5);
+    const curve = new CatmullRomCurve3(SPLINE_POINTS, false, "catmullrom", 0.5);
 
     // ── Star Field ──
-    const starGeometry = new THREE.BufferGeometry();
+    const starGeometry = new BufferGeometry();
     const starPositions = new Float32Array(starCount * 3);
     const starSizes = new Float32Array(starCount);
     const starRandoms = new Float32Array(starCount);
@@ -102,20 +165,20 @@ export default function SpaceScene() {
       starRandoms[i] = Math.random();
     }
 
-    starGeometry.setAttribute("position", new THREE.BufferAttribute(starPositions, 3));
-    starGeometry.setAttribute("aSize", new THREE.BufferAttribute(starSizes, 1));
-    starGeometry.setAttribute("aRandom", new THREE.BufferAttribute(starRandoms, 1));
+    starGeometry.setAttribute("position", new Float32BufferAttribute(starPositions, 3));
+    starGeometry.setAttribute("aSize", new Float32BufferAttribute(starSizes, 1));
+    starGeometry.setAttribute("aRandom", new Float32BufferAttribute(starRandoms, 1));
 
     const starUniforms = {
       uTime: { value: 0 },
       uWarpFactor: { value: 0 },
       uPixelRatio: { value: dpr },
-      uCameraForward: { value: new THREE.Vector3(0, 0, -1) },
-      uColor: { value: new THREE.Color(0.85, 0.9, 1.0) },
+      uCameraForward: { value: new Vector3(0, 0, -1) },
+      uColor: { value: new Color(0.85, 0.9, 1.0) },
     };
 
     const starMaterial = isMobile
-      ? new THREE.PointsMaterial({
+      ? new PointsMaterial({
           color: 0xdde0ff,
           size: 2.0,
           sizeAttenuation: true,
@@ -123,31 +186,29 @@ export default function SpaceScene() {
           opacity: 0.8,
           depthWrite: false,
         })
-      : new THREE.ShaderMaterial({
+      : new ShaderMaterial({
           vertexShader: starVertexShader,
           fragmentShader: starFragmentShader,
           uniforms: starUniforms,
           transparent: true,
           depthWrite: false,
-          blending: THREE.AdditiveBlending,
+          blending: AdditiveBlending,
         });
 
-    const stars = new THREE.Points(starGeometry, starMaterial);
+    const stars = new Points(starGeometry, starMaterial);
     scene.add(stars);
 
-    // ── Nebulae (desktop only, LAZY LOADED by camera proximity) ──
-    // Instead of creating all nebulae at init (blocks main thread),
-    // we create them on-demand when the camera approaches their zone.
-    const nebulaGroups: THREE.Points[] = [];
+    // ── Nebulae (LAZY LOADED by camera proximity, skip in low-power) ──
+    const nebulaGroups: Points[] = [];
     const loadedBiomes = new Set<string>();
-    const BIOME_LOAD_DISTANCE = 800; // units ahead of camera to start loading
+    const BIOME_LOAD_DISTANCE = 800;
 
     function loadBiome(biome: typeof BIOMES[number]) {
-      if (loadedBiomes.has(biome.id) || biome.isMeteorShower) return;
+      if (loadedBiomes.has(biome.id) || biome.isMeteorShower || lowPowerMode) return;
       loadedBiomes.add(biome.id);
 
       const count = Math.floor(NEBULA_PARTICLES_PER_BIOME * biome.density);
-      const geo = new THREE.BufferGeometry();
+      const geo = new BufferGeometry();
       const positions = new Float32Array(count * 3);
       const sizes = new Float32Array(count);
       const opacities = new Float32Array(count);
@@ -161,11 +222,11 @@ export default function SpaceScene() {
         opacities[i] = 0.01 + Math.random() * 0.04;
       }
 
-      geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-      geo.setAttribute("aSize", new THREE.BufferAttribute(sizes, 1));
-      geo.setAttribute("aOpacity", new THREE.BufferAttribute(opacities, 1));
+      geo.setAttribute("position", new Float32BufferAttribute(positions, 3));
+      geo.setAttribute("aSize", new Float32BufferAttribute(sizes, 1));
+      geo.setAttribute("aOpacity", new Float32BufferAttribute(opacities, 1));
 
-      const mat = new THREE.ShaderMaterial({
+      const mat = new ShaderMaterial({
         vertexShader: nebulaVertexShader,
         fragmentShader: nebulaFragmentShader,
         uniforms: {
@@ -176,25 +237,25 @@ export default function SpaceScene() {
         },
         transparent: true,
         depthWrite: false,
-        blending: THREE.AdditiveBlending,
+        blending: AdditiveBlending,
       });
 
-      const points = new THREE.Points(geo, mat);
+      const points = new Points(geo, mat);
       scene.add(points);
       nebulaGroups.push(points);
     }
 
-    // ── Meteor Shower (TechStack zone, desktop only, LAZY LOADED) ──
+    // ── Meteor Shower (LAZY LOADED, skip in low-power) ──
     let meteorPositions: Float32Array | null = null;
-    let meteorPoints: THREE.Points | null = null;
+    let meteorPoints: Points | null = null;
     const techBiome = BIOMES.find((b) => b.isMeteorShower);
     let meteorLoaded = false;
 
     function loadMeteors() {
-      if (meteorLoaded || isMobile || !techBiome) return;
+      if (meteorLoaded || isMobile || !techBiome || lowPowerMode) return;
       meteorLoaded = true;
 
-      const geo = new THREE.BufferGeometry();
+      const geo = new BufferGeometry();
       meteorPositions = new Float32Array(METEOR_COUNT * 3);
       const mSizes = new Float32Array(METEOR_COUNT);
       const mRandoms = new Float32Array(METEOR_COUNT);
@@ -208,42 +269,41 @@ export default function SpaceScene() {
         mRandoms[i] = Math.random();
       }
 
-      geo.setAttribute("position", new THREE.BufferAttribute(meteorPositions, 3));
-      geo.setAttribute("aSize", new THREE.BufferAttribute(mSizes, 1));
-      geo.setAttribute("aRandom", new THREE.BufferAttribute(mRandoms, 1));
+      geo.setAttribute("position", new Float32BufferAttribute(meteorPositions, 3));
+      geo.setAttribute("aSize", new Float32BufferAttribute(mSizes, 1));
+      geo.setAttribute("aRandom", new Float32BufferAttribute(mRandoms, 1));
 
-      const mat = new THREE.ShaderMaterial({
+      const mat = new ShaderMaterial({
         vertexShader: starVertexShader,
         fragmentShader: starFragmentShader,
         uniforms: {
           uTime: { value: 0 },
           uWarpFactor: { value: 0.3 },
           uPixelRatio: { value: dpr },
-          uCameraForward: { value: new THREE.Vector3(0, 0, -1) },
+          uCameraForward: { value: new Vector3(0, 0, -1) },
           uColor: { value: techBiome.color.clone() },
         },
         transparent: true,
         depthWrite: false,
-        blending: THREE.AdditiveBlending,
+        blending: AdditiveBlending,
       });
 
-      meteorPoints = new THREE.Points(geo, mat);
+      meteorPoints = new Points(geo, mat);
       scene.add(meteorPoints);
     }
 
     // ── Animation State ──
     let lastProgress = 0;
     let lastTime = performance.now();
-    const targetCamPos = new THREE.Vector3();
-    const targetLookAt = new THREE.Vector3();
-    const currentCamPos = new THREE.Vector3();
-    let currentLookAtLerp = new THREE.Vector3();
+    const targetCamPos = new Vector3();
+    const targetLookAt = new Vector3();
+    const currentCamPos = new Vector3();
+    let currentLookAtLerp = new Vector3();
     let initialized = false;
-    let liftoffWarp = 0; // Extra warp from liftoff event (0→1→0)
+    let liftoffWarp = 0;
 
     // Listen for liftoff event from Loader
     const onLiftoff = () => {
-      // Spike warp to max, then ease down over 2 seconds
       gsap.fromTo(
         { value: 0 },
         { value: 1 },
@@ -251,17 +311,13 @@ export default function SpaceScene() {
           value: 1,
           duration: 0.3,
           ease: "power4.in",
-          onUpdate: function () {
-            liftoffWarp = this.targets()[0].value;
-          },
+          onUpdate: function () { liftoffWarp = this.targets()[0].value; },
           onComplete: () => {
             gsap.to({ value: 1 }, {
               value: 0,
               duration: 1.8,
               ease: "power2.out",
-              onUpdate: function () {
-                liftoffWarp = this.targets()[0].value;
-              },
+              onUpdate: function () { liftoffWarp = this.targets()[0].value; },
             });
           },
         }
@@ -269,20 +325,22 @@ export default function SpaceScene() {
     };
     window.addEventListener("space-liftoff", onLiftoff);
 
-    // ── GSAP Ticker (synced with Lenis) ──
+    // ── Reusable Vector3 (avoid GC pressure) ──
+    const _forward = new Vector3();
+
+    // ── GSAP Ticker ──
     const onTick = (time: number) => {
       const now = performance.now();
       const dt = (now - lastTime) / 1000;
       lastTime = now;
+      const elapsed = time;
 
-      const elapsed = time; // GSAP time in seconds
-
-      // Read scroll progress
+      // Scroll progress
       const scrollY = window.scrollY;
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       const progress = maxScroll > 0 ? Math.max(0, Math.min(1, scrollY / maxScroll)) : 0;
 
-      // Compute scroll velocity → warp factor (+ liftoff burst)
+      // Warp factor
       const velocity = Math.abs(progress - lastProgress) / Math.max(dt, 0.001);
       const scrollWarp = Math.min(1.0, velocity * WARP_SENSITIVITY);
       const warpTarget = Math.min(1.0, Math.max(scrollWarp, liftoffWarp));
@@ -290,7 +348,7 @@ export default function SpaceScene() {
       starUniforms.uWarpFactor.value += (warpTarget - currentWarp) * WARP_LERP;
       lastProgress = progress;
 
-      // Camera position on spline
+      // Camera on spline
       curve.getPointAt(progress, targetCamPos);
       curve.getPointAt(Math.min(1, progress + LOOK_AHEAD), targetLookAt);
 
@@ -306,58 +364,53 @@ export default function SpaceScene() {
       camera.position.copy(currentCamPos);
       camera.lookAt(currentLookAtLerp);
 
-      // Camera forward vector for warp shader
-      const forward = new THREE.Vector3();
-      camera.getWorldDirection(forward);
-      starUniforms.uCameraForward.value.copy(forward);
-
-      // Update uniforms
+      // Camera forward (reuse vector)
+      camera.getWorldDirection(_forward);
+      starUniforms.uCameraForward.value.copy(_forward);
       starUniforms.uTime.value = elapsed;
 
-      // Lazy-load biomes + meteors as camera approaches (desktop only)
-      if (!isMobile) {
+      // Lazy-load biomes + meteors
+      if (!isMobile && !lowPowerMode) {
         const camZ = currentCamPos.z;
         for (const biome of BIOMES) {
           if (!loadedBiomes.has(biome.id) && camZ < biome.startZ + BIOME_LOAD_DISTANCE) {
             loadBiome(biome);
           }
         }
-        // Lazy-load meteors
         if (!meteorLoaded && techBiome && camZ < techBiome.startZ + BIOME_LOAD_DISTANCE) {
           loadMeteors();
         }
       }
 
       // Update nebula uniforms
-      nebulaGroups.forEach((ng) => {
-        const mat = ng.material as THREE.ShaderMaterial;
+      for (let i = 0; i < nebulaGroups.length; i++) {
+        const mat = nebulaGroups[i].material as ShaderMaterial;
         mat.uniforms.uTime.value = elapsed;
         mat.uniforms.uCameraZ.value = currentCamPos.z;
-      });
+      }
 
-      // Meteor animation: move toward camera
+      // Meteor animation
       if (meteorPositions && meteorPoints && techBiome) {
-        const posAttr = meteorPoints.geometry.getAttribute("position") as THREE.BufferAttribute;
+        const posAttr = meteorPoints.geometry.getAttribute("position");
         const zMin = techBiome.startZ;
         const zMax = techBiome.endZ;
 
         for (let i = 0; i < METEOR_COUNT; i++) {
-          meteorPositions[i * 3 + 2] += 2.0; // move toward camera
-          // Wrap around
+          meteorPositions[i * 3 + 2] += 2.0;
           if (meteorPositions[i * 3 + 2] > zMin + 100) {
             meteorPositions[i * 3 + 2] = zMax;
             meteorPositions[i * 3] = (Math.random() - 0.5) * 400;
             meteorPositions[i * 3 + 1] = (Math.random() - 0.5) * 300;
           }
         }
-        posAttr.needsUpdate = true;
+        (posAttr as { needsUpdate: boolean }).needsUpdate = true;
 
-        const mMat = meteorPoints.material as THREE.ShaderMaterial;
+        const mMat = meteorPoints.material as ShaderMaterial;
         mMat.uniforms.uTime.value = elapsed;
-        mMat.uniforms.uCameraForward.value.copy(forward);
+        mMat.uniforms.uCameraForward.value.copy(_forward);
       }
 
-      // Update shared space state (for other components)
+      // Shared state
       spaceState.current = {
         cameraProgress: progress,
         cameraZ: currentCamPos.z,
@@ -368,11 +421,11 @@ export default function SpaceScene() {
       renderer.render(scene, camera);
     };
 
-    // ── FPS Cap (eco-design: 60fps max, saves energy on 120/144Hz displays) ──
-    gsap.ticker.fps(60);
+    // FPS cap
+    gsap.ticker.fps(targetFps);
     gsap.ticker.add(onTick);
 
-    // ── Page Visibility API (eco-design: pause rendering when tab hidden) ──
+    // Page Visibility API
     let isVisible = true;
     const onVisibilityChange = () => {
       if (document.hidden) {
@@ -380,15 +433,15 @@ export default function SpaceScene() {
         gsap.ticker.remove(onTick);
       } else {
         isVisible = true;
-        lastTime = performance.now(); // prevent huge dt jump
+        lastTime = performance.now();
         gsap.ticker.add(onTick);
       }
     };
     document.addEventListener("visibilitychange", onVisibilityChange);
 
-    // ── Resize ──
+    // Resize
     const onResize = () => {
-      if (!isVisible) return; // don't resize when hidden
+      if (!isVisible) return;
       const w = window.innerWidth;
       const h = window.innerHeight;
       camera.aspect = w / h;
@@ -397,22 +450,21 @@ export default function SpaceScene() {
     };
     window.addEventListener("resize", onResize);
 
-    // ── Cleanup ──
+    // Cleanup
     return () => {
       gsap.ticker.remove(onTick);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("space-liftoff", onLiftoff);
       document.removeEventListener("visibilitychange", onVisibilityChange);
 
-      // Dispose everything safely
       scene.traverse((obj) => {
-        if (obj instanceof THREE.Points || obj instanceof THREE.Mesh) {
+        if (obj instanceof Points || obj instanceof Mesh) {
           if (obj.geometry) obj.geometry.dispose();
           if (obj.material) {
             if (Array.isArray(obj.material)) {
-              obj.material.forEach((m) => m.dispose());
+              obj.material.forEach((m: Material) => m.dispose());
             } else {
-              obj.material.dispose();
+              (obj.material as Material).dispose();
             }
           }
         }

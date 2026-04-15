@@ -1,4 +1,5 @@
-import * as THREE from "three";
+// ── Granular Three.js imports (tree-shaking) ──
+import { Vector3, Color } from "three";
 
 /* ─── Constants ─── */
 export const STAR_COUNT = 5000;
@@ -16,20 +17,18 @@ export const CAMERA_LERP = 0.1;
 export const LOOK_AHEAD = 0.005;
 
 /* ─── Spline Control Points ─── */
-// The camera flies through these points as the user scrolls.
-// Mostly forward (Z-axis) with gentle lateral curves at section transitions.
 export const SPLINE_POINTS = [
-  new THREE.Vector3(0, 0, 0),           // Hero start
-  new THREE.Vector3(30, 15, -500),       // Hero end → Approche
-  new THREE.Vector3(-40, 10, -1000),     // Approche end → Réalisations
-  new THREE.Vector3(25, -10, -1500),     // Réalisations end → Témoignages
-  new THREE.Vector3(-20, 15, -2000),     // Témoignages end → À Propos
-  new THREE.Vector3(15, 5, -2500),       // À Propos end → Engagement
-  new THREE.Vector3(-45, -20, -3000),    // Engagement end → TechStack
-  new THREE.Vector3(35, 10, -3500),      // TechStack end → Expertises
-  new THREE.Vector3(0, 0, -4000),        // Expertises end → FAQ
-  new THREE.Vector3(10, -5, -4500),      // FAQ end → Contact
-  new THREE.Vector3(0, 0, -5000),        // Contact end → Footer
+  new Vector3(0, 0, 0),
+  new Vector3(30, 15, -500),
+  new Vector3(-40, 10, -1000),
+  new Vector3(25, -10, -1500),
+  new Vector3(-20, 15, -2000),
+  new Vector3(15, 5, -2500),
+  new Vector3(-45, -20, -3000),
+  new Vector3(35, 10, -3500),
+  new Vector3(0, 0, -4000),
+  new Vector3(10, -5, -4500),
+  new Vector3(0, 0, -5000),
 ];
 
 /* ─── Biome Definitions ─── */
@@ -38,9 +37,9 @@ export interface BiomeConfig {
   label: string;
   startZ: number;
   endZ: number;
-  color: THREE.Color;
-  density: number; // 0-1, relative particle density
-  particleSize: number; // base size for nebula particles
+  color: Color;
+  density: number;
+  particleSize: number;
   isMeteorShower?: boolean;
 }
 
@@ -50,7 +49,7 @@ export const BIOMES: BiomeConfig[] = [
     label: "Deep Void",
     startZ: 100,
     endZ: -500,
-    color: new THREE.Color(0.6, 0.7, 1.0), // blue-white
+    color: new Color(0.6, 0.7, 1.0),
     density: 0.2,
     particleSize: 80,
   },
@@ -59,7 +58,7 @@ export const BIOMES: BiomeConfig[] = [
     label: "Violet Nebula",
     startZ: -400,
     endZ: -1100,
-    color: new THREE.Color(0.486, 0.361, 0.988), // #7c5cfc
+    color: new Color(0.486, 0.361, 0.988),
     density: 0.8,
     particleSize: 120,
   },
@@ -68,7 +67,7 @@ export const BIOMES: BiomeConfig[] = [
     label: "Teal Nebula",
     startZ: -1000,
     endZ: -1600,
-    color: new THREE.Color(0.0, 0.831, 0.667), // #00d4aa
+    color: new Color(0.0, 0.831, 0.667),
     density: 0.6,
     particleSize: 100,
   },
@@ -77,7 +76,7 @@ export const BIOMES: BiomeConfig[] = [
     label: "Coral Dust",
     startZ: -1500,
     endZ: -2100,
-    color: new THREE.Color(1.0, 0.478, 0.361), // #ff7a5c
+    color: new Color(1.0, 0.478, 0.361),
     density: 0.4,
     particleSize: 90,
   },
@@ -86,7 +85,7 @@ export const BIOMES: BiomeConfig[] = [
     label: "Lavender Expanse",
     startZ: -2000,
     endZ: -2600,
-    color: new THREE.Color(0.655, 0.545, 0.98), // #a78bfa
+    color: new Color(0.655, 0.545, 0.98),
     density: 0.5,
     particleSize: 100,
   },
@@ -95,7 +94,7 @@ export const BIOMES: BiomeConfig[] = [
     label: "Meteor Shower",
     startZ: -2900,
     endZ: -3600,
-    color: new THREE.Color(1.0, 0.6, 0.2), // orange-white
+    color: new Color(1.0, 0.6, 0.2),
     density: 0.9,
     particleSize: 40,
     isMeteorShower: true,
@@ -105,7 +104,7 @@ export const BIOMES: BiomeConfig[] = [
     label: "Purple Expanse",
     startZ: -3500,
     endZ: -4100,
-    color: new THREE.Color(0.486, 0.361, 0.988),
+    color: new Color(0.486, 0.361, 0.988),
     density: 0.5,
     particleSize: 100,
   },
@@ -114,7 +113,7 @@ export const BIOMES: BiomeConfig[] = [
     label: "Calm Arrival",
     startZ: -4400,
     endZ: -5100,
-    color: new THREE.Color(0.5, 0.5, 0.7),
+    color: new Color(0.5, 0.5, 0.7),
     density: 0.15,
     particleSize: 60,
   },
@@ -122,7 +121,7 @@ export const BIOMES: BiomeConfig[] = [
 
 /* ─── Star spread dimensions ─── */
 export const STAR_SPREAD = {
-  x: 800,  // ±400 laterally
-  y: 600,  // ±300 vertically
-  z: 5800, // full path + buffer
+  x: 800,
+  y: 600,
+  z: 5800,
 };
