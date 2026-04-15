@@ -1,185 +1,212 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const TECHNOLOGIES = [
-  { name: "PHP", color: "#777BB3" },
-  { name: "Symfony", color: "#000000" },
-  { name: "ReactJs", color: "#61DAFB" },
-  { name: "React Native", color: "#61DAFB" },
-  { name: "Node.js", color: "#339933" },
-  { name: "Python", color: "#3776AB" },
-  { name: "Tailwind", color: "#06B6D4" },
-  { name: "Twig", color: "#B4CA65" },
-  { name: "Docker", color: "#2496ED" },
-  { name: "Figma", color: "#F24E1E" },
-  { name: "GitHub", color: "#ffffff" },
-  { name: "Gemini", color: "#886FBF" },
-  { name: "Claude", color: "#D97757" },
-  { name: "Flutter", color: "#02569B" },
-  { name: "iOS", color: "#999999" },
-  { name: "Android", color: "#3DDC84" },
-  { name: "Firebase", color: "#FFCA28" },
+/* ─── Technology data with game difficulty ─── */
+interface Tech {
+  name: string;
+  color: string;
+  speed: number;  // 1 = slow, 2 = medium, 3 = fast/erratic
+  score: number;  // points awarded on destroy
+}
+
+const TECHNOLOGIES: Tech[] = [
+  // Slow (easy targets, 10pts)
+  { name: "HTML", color: "#E44D26", speed: 1, score: 10 },
+  { name: "CSS", color: "#1572B6", speed: 1, score: 10 },
+  { name: "PHP", color: "#777BB3", speed: 1, score: 10 },
+  { name: "Twig", color: "#B4CA65", speed: 1, score: 10 },
+  { name: "GitHub", color: "#ffffff", speed: 1, score: 10 },
+
+  // Medium (25pts)
+  { name: "ReactJs", color: "#61DAFB", speed: 2, score: 25 },
+  { name: "Node.js", color: "#339933", speed: 2, score: 25 },
+  { name: "Tailwind", color: "#06B6D4", speed: 2, score: 25 },
+  { name: "Symfony", color: "#000000", speed: 2, score: 25 },
+  { name: "Flutter", color: "#02569B", speed: 2, score: 25 },
+  { name: "Firebase", color: "#FFCA28", speed: 2, score: 25 },
+  { name: "Docker", color: "#2496ED", speed: 2, score: 25 },
+
+  // Fast/erratic (50pts)
+  { name: "Three.js", color: "#00d4aa", speed: 3, score: 50 },
+  { name: "GSAP", color: "#88CE02", speed: 3, score: 50 },
+  { name: "Python", color: "#3776AB", speed: 3, score: 50 },
+  { name: "Claude", color: "#D97757", speed: 3, score: 50 },
+  { name: "Figma", color: "#F24E1E", speed: 3, score: 50 },
 ];
 
-const ROW_1 = TECHNOLOGIES.slice(0, 9);
-const ROW_2 = TECHNOLOGIES.slice(9);
-
-/* ─── Marquee Components ─── */
-function MarqueeItem({ tech }: { tech: (typeof TECHNOLOGIES)[number] }) {
-  return (
-    <div className="flex items-center gap-3 px-5 py-3 rounded-full border border-white/[0.08] bg-white/[0.03] shrink-0 transition-all duration-300 hover:bg-white/[0.08] hover:border-white/[0.15] hover:scale-105 group">
-      <span
-        className="w-2.5 h-2.5 rounded-full shrink-0 transition-shadow duration-300 group-hover:shadow-[0_0_8px_currentColor]"
-        style={{ backgroundColor: tech.color }}
-      />
-      <span className="text-sm font-medium whitespace-nowrap transition-opacity duration-300 opacity-60 group-hover:opacity-100 text-foreground">
-        {tech.name}
-      </span>
-    </div>
-  );
-}
-
-function MarqueeRow({ items, direction }: { items: (typeof TECHNOLOGIES)[number][]; direction: "left" | "right" }) {
-  const doubled = [...items, ...items];
-  return (
-    <div className={`overflow-hidden ${direction === "left" ? "marquee-left" : "marquee-right"}`}>
-      <div className="marquee-track">
-        {doubled.map((tech, i) => (
-          <MarqueeItem key={`${tech.name}-${i}`} tech={tech} />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ─── Orbital Pill ─── */
-function OrbitalPill({
+/* ─── Floating Tag Component ─── */
+function FloatingTag({
   tech,
-  index,
-  mouseRef,
   containerRef,
+  onDestroy,
 }: {
-  tech: (typeof TECHNOLOGIES)[number];
-  index: number;
-  mouseRef: React.RefObject<{ x: number; y: number }>;
-  containerRef: React.RefObject<HTMLDivElement>;
+  tech: Tech;
+  containerRef: React.RefObject<HTMLDivElement | null>;
+  onDestroy: (score: number) => void;
 }) {
-  const pillRef = useRef<HTMLDivElement>(null);
-  const physics = useRef({
-    x: 0,
-    y: 0,
-    vx: 0,
-    vy: 0,
-    targetX: 0,
-    targetY: 0,
-  });
-  const glowRef = useRef(0);
+  const tagRef = useRef<HTMLDivElement>(null);
+  const tweenRef = useRef<gsap.core.Tween | null>(null);
+  const isDestroyed = useRef(false);
 
-  useEffect(() => {
-    const pill = pillRef.current;
+  // Random roaming animation
+  const startRoaming = useCallback(() => {
+    const tag = tagRef.current;
     const container = containerRef.current;
-    if (!pill || !container) return;
+    if (!tag || !container || isDestroyed.current) return;
 
-    // Calculate rest position in elliptical layout
-    const cols = 5;
-    const rows = Math.ceil(TECHNOLOGIES.length / cols);
-    const col = index % cols;
-    const row = Math.floor(index / cols);
     const rect = container.getBoundingClientRect();
-    const spacingX = rect.width / (cols + 1);
-    const spacingY = 80;
-    const offsetX = spacingX * (col + 1) - rect.width / 2;
-    const offsetY = spacingY * (row + 0.5) - (rows * spacingY) / 2;
+    const maxX = rect.width / 2 - 60;
+    const maxY = rect.height / 2 - 25;
 
-    // Add randomness to rest position
-    const tx = offsetX + (Math.random() - 0.5) * 30;
-    const ty = offsetY + (Math.random() - 0.5) * 20;
-    physics.current.targetX = tx;
-    physics.current.targetY = ty;
+    // Speed determines duration (fast = shorter duration = harder to click)
+    const baseDuration = tech.speed === 1 ? 6 : tech.speed === 2 ? 3.5 : 2;
+    const duration = baseDuration + Math.random() * 2;
 
-    // Start from random scattered positions
-    physics.current.x = (Math.random() - 0.5) * rect.width * 1.5;
-    physics.current.y = (Math.random() - 0.5) * 400;
+    // Erratic movement for fast tags
+    const erratic = tech.speed === 3 ? (Math.random() - 0.5) * 40 : 0;
 
-    const k = 0.04; // spring stiffness
-    const d = 0.85; // damping
-    const G = 5000; // cursor gravity strength
-    const maxGravityDist = 250;
+    const nextX = (Math.random() - 0.5) * maxX * 1.6 + erratic;
+    const nextY = (Math.random() - 0.5) * maxY * 1.6 + erratic;
 
-    let raf: number;
+    tweenRef.current = gsap.to(tag, {
+      x: nextX,
+      y: nextY,
+      duration,
+      ease: tech.speed === 3 ? "power1.inOut" : "sine.inOut",
+      onComplete: startRoaming,
+    });
+  }, [tech, containerRef]);
 
-    const animate = () => {
-      const p = physics.current;
-      const m = mouseRef.current;
+  // Initialize position and start roaming
+  useEffect(() => {
+    const tag = tagRef.current;
+    const container = containerRef.current;
+    if (!tag || !container) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-      // Spring force toward rest position
-      const springFx = -k * (p.x - p.targetX);
-      const springFy = -k * (p.y - p.targetY);
+    const rect = container.getBoundingClientRect();
+    const startX = (Math.random() - 0.5) * rect.width * 0.8;
+    const startY = (Math.random() - 0.5) * rect.height * 0.8;
+    gsap.set(tag, { x: startX, y: startY, opacity: 1 });
 
-      // Cursor gravity
-      let gravFx = 0;
-      let gravFy = 0;
-      let dist = Infinity;
+    startRoaming();
 
-      if (m && container) {
-        const containerRect = container.getBoundingClientRect();
-        const mx = m.x - containerRect.left - containerRect.width / 2;
-        const my = m.y - containerRect.top - containerRect.height / 2;
-        const dx = mx - p.x;
-        const dy = my - p.y;
-        dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < maxGravityDist && dist > 5) {
-          const force = Math.min(G / (dist * dist), 2);
-          gravFx = (dx / dist) * force;
-          gravFy = (dy / dist) * force;
-        }
-      }
-
-      // Update velocity and position
-      p.vx = (p.vx + springFx + gravFx) * d;
-      p.vy = (p.vy + springFy + gravFy) * d;
-      p.x += p.vx;
-      p.y += p.vy;
-
-      // Glow based on proximity
-      const targetGlow = dist < maxGravityDist ? 1 - dist / maxGravityDist : 0;
-      glowRef.current += (targetGlow - glowRef.current) * 0.1;
-
-      if (pill) {
-        pill.style.transform = `translate3d(${p.x}px, ${p.y}px, 0)`;
-        pill.style.borderColor = `rgba(255,255,255,${0.06 + glowRef.current * 0.15})`;
-        pill.style.background = `rgba(255,255,255,${0.02 + glowRef.current * 0.06})`;
-      }
-
-      raf = requestAnimationFrame(animate);
+    return () => {
+      if (tweenRef.current) tweenRef.current.kill();
     };
+  }, [startRoaming]);
 
-    raf = requestAnimationFrame(animate);
+  // Handle click → destroy
+  const handleClick = () => {
+    const tag = tagRef.current;
+    if (!tag || isDestroyed.current) return;
+    isDestroyed.current = true;
 
-    return () => cancelAnimationFrame(raf);
-  }, [index, mouseRef, containerRef]);
+    // Stop movement
+    if (tweenRef.current) tweenRef.current.kill();
+
+    // Award points
+    onDestroy(tech.score);
+
+    // ── DISINTEGRATION ANIMATION ──
+    // Create fragment particles from the tag
+    const rect = tag.getBoundingClientRect();
+    const parentRect = tag.parentElement?.getBoundingClientRect();
+    if (!parentRect) return;
+
+    const cx = rect.left - parentRect.left + rect.width / 2;
+    const cy = rect.top - parentRect.top + rect.height / 2;
+
+    // Hide original tag
+    gsap.to(tag, { opacity: 0, scale: 0.5, duration: 0.15 });
+
+    // Create 8 fragment particles
+    const fragmentCount = 8;
+    for (let i = 0; i < fragmentCount; i++) {
+      const frag = document.createElement("div");
+      frag.className = "tech-fragment";
+      frag.style.background = tech.color;
+      frag.style.left = `${cx}px`;
+      frag.style.top = `${cy}px`;
+      frag.style.boxShadow = `0 0 8px ${tech.color}`;
+      tag.parentElement?.appendChild(frag);
+
+      const angle = (i / fragmentCount) * Math.PI * 2 + Math.random() * 0.5;
+      const dist = 40 + Math.random() * 60;
+
+      gsap.to(frag, {
+        x: Math.cos(angle) * dist,
+        y: Math.sin(angle) * dist,
+        opacity: 0,
+        scale: 0,
+        duration: 0.6 + Math.random() * 0.3,
+        ease: "power2.out",
+        onComplete: () => frag.remove(),
+      });
+    }
+
+    // Show score popup
+    const popup = document.createElement("div");
+    popup.className = "tech-score-popup";
+    popup.textContent = `+${tech.score}`;
+    popup.style.left = `${cx}px`;
+    popup.style.top = `${cy}px`;
+    popup.style.color = tech.color;
+    tag.parentElement?.appendChild(popup);
+
+    gsap.to(popup, {
+      y: -40,
+      opacity: 0,
+      duration: 0.8,
+      ease: "power2.out",
+      onComplete: () => popup.remove(),
+    });
+
+    // ── RESPAWN after 3-5 seconds ──
+    const respawnDelay = 3000 + Math.random() * 2000;
+    setTimeout(() => {
+      if (!tag || !tag.parentElement) return;
+      isDestroyed.current = false;
+
+      const container = containerRef.current;
+      if (!container) return;
+      const containerRect = container.getBoundingClientRect();
+      const newX = (Math.random() - 0.5) * containerRect.width * 0.6;
+      const newY = (Math.random() - 0.5) * containerRect.height * 0.6;
+
+      gsap.set(tag, { x: newX, y: newY, scale: 0, opacity: 0 });
+      gsap.to(tag, {
+        scale: 1,
+        opacity: 1,
+        duration: 0.4,
+        ease: "back.out(2)",
+        onComplete: startRoaming,
+      });
+    }, respawnDelay);
+  };
 
   return (
     <div
-      ref={pillRef}
-      className="absolute left-1/2 top-1/2 flex items-center gap-2.5 px-4 py-2.5 rounded-full border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm cursor-default transition-[border-color,background] duration-100 will-change-transform"
+      ref={tagRef}
+      onClick={handleClick}
+      className="tech-tag absolute left-1/2 top-1/2 select-none"
+      data-speed={tech.speed}
+      data-score={tech.score}
+      style={{ opacity: 0 }}
     >
       <span
-        className="w-2.5 h-2.5 rounded-full shrink-0"
-        style={{
-          backgroundColor: tech.color,
-          boxShadow: `0 0 10px ${tech.color}40`,
-        }}
+        className="tech-tag-dot"
+        style={{ background: tech.color, boxShadow: `0 0 8px ${tech.color}60` }}
       />
-      <span className="text-sm font-medium whitespace-nowrap text-foreground/80">
-        {tech.name}
-      </span>
+      <span className="tech-tag-name">{tech.name}</span>
+      {tech.speed === 3 && (
+        <span className="tech-tag-badge">★</span>
+      )}
     </div>
   );
 }
@@ -187,25 +214,14 @@ function OrbitalPill({
 /* ─── Main TechStack Section ─── */
 export default function TechStack() {
   const sectionRef = useRef<HTMLElement>(null);
-  const orbitalRef = useRef<HTMLDivElement>(null);
-  const mouseRef = useRef({ x: -9999, y: -9999 });
-  const [isDesktop, setIsDesktop] = useState(false);
+  const arenaRef = useRef<HTMLDivElement>(null);
+  const [score, setScore] = useState(0);
+  const [gameActive, setGameActive] = useState(false);
 
-  useEffect(() => {
-    const check = () => setIsDesktop(window.innerWidth >= 768);
-    check();
-    window.addEventListener("resize", check);
-
-    const onMove = (e: MouseEvent) => {
-      mouseRef.current = { x: e.clientX, y: e.clientY };
-    };
-    window.addEventListener("mousemove", onMove, { passive: true });
-
-    return () => {
-      window.removeEventListener("resize", check);
-      window.removeEventListener("mousemove", onMove);
-    };
-  }, []);
+  const handleDestroy = useCallback((points: number) => {
+    if (!gameActive) setGameActive(true);
+    setScore((prev) => prev + points);
+  }, [gameActive]);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -213,43 +229,12 @@ export default function TechStack() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const ctx = gsap.context(() => {
-      // Title animation
       const title = section.querySelector(".techstack-title");
       if (title) {
-        gsap.fromTo(
-          title,
-          { opacity: 0, y: 30 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: title,
-              start: "top 85%",
-              toggleActions: "play none none none",
-            },
-          }
-        );
-      }
-
-      // Marquee fade in
-      const marquee = section.querySelector(".techstack-marquee");
-      if (marquee) {
-        gsap.fromTo(
-          marquee,
-          { opacity: 0 },
-          {
-            opacity: 1,
-            duration: 0.8,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: marquee,
-              start: "top 85%",
-              toggleActions: "play none none none",
-            },
-          }
-        );
+        gsap.fromTo(title, { opacity: 0, y: 30 }, {
+          opacity: 1, y: 0, duration: 0.6, ease: "power2.out",
+          scrollTrigger: { trigger: title, start: "top 85%", toggleActions: "play none none none" },
+        });
       }
     }, section);
 
@@ -258,17 +243,20 @@ export default function TechStack() {
 
   return (
     <section
-      id="stack" data-space-section="techstack"
+      id="stack"
+      data-space-section="techstack"
       ref={sectionRef}
+      aria-label="Stack technique et technologies maîtrisées"
       className="relative py-24 md:py-32 overflow-hidden"
       style={{ background: "var(--color-background)" }}
     >
       <div className="max-w-6xl mx-auto px-6">
         {/* Header */}
-        <div className="techstack-title mb-16">
-          <p className="text-sm uppercase tracking-[0.2em] font-medium text-primary-light">
-            Technologies
-          </p>
+        <div className="techstack-title mb-12">
+          <div className="holo-resolve-badge mb-4">
+            <span className="holo-dot-resolve" />
+            <span>Arsenal technologique</span>
+          </div>
           <h2 className="text-3xl md:text-5xl font-bold mt-3 leading-tight font-heading text-foreground">
             Stack technique
           </h2>
@@ -276,33 +264,43 @@ export default function TechStack() {
             Les technologies que je maîtrise pour livrer vos projets — du
             backend au mobile, du cloud à l&apos;IA. Pas de sous-traitance, un seul interlocuteur.
           </p>
+          <p className="mt-2 text-xs font-mono text-muted/40">
+            [ Essayez de cliquer sur les tags... ]
+          </p>
         </div>
 
-        {/* Marquee (always visible, primary on mobile) */}
-        <div className="techstack-marquee space-y-4 mb-16">
-          <MarqueeRow items={ROW_1} direction="left" />
-          <MarqueeRow items={ROW_2} direction="right" />
-        </div>
-
-        {/* Orbital Grid (desktop only) */}
-        {isDesktop && (
+        {/* ── GAME ARENA ── */}
+        <div
+          ref={arenaRef}
+          className="tech-arena relative mx-auto"
+          style={{ height: "420px", maxWidth: "1000px" }}
+        >
+          {/* HUD Score Counter */}
           <div
-            ref={orbitalRef}
-            className="relative mx-auto hidden md:block"
-            style={{ height: "360px", maxWidth: "900px" }}
-            data-cursor="explore"
+            className={`tech-hud-score ${gameActive ? "tech-hud-score--active" : ""}`}
           >
-            {TECHNOLOGIES.map((tech, i) => (
-              <OrbitalPill
-                key={tech.name}
-                tech={tech}
-                index={i}
-                mouseRef={mouseRef as React.RefObject<{ x: number; y: number }>}
-                containerRef={orbitalRef as React.RefObject<HTMLDivElement>}
-              />
-            ))}
+            <span className="tech-hud-label">SCORE</span>
+            <span className="tech-hud-value">
+              {String(score).padStart(4, "0")}
+            </span>
           </div>
-        )}
+
+          {/* Corner HUD decorations */}
+          <div className="absolute top-2 left-2 w-6 h-6 border-t border-l border-[rgba(0,212,170,0.15)]" aria-hidden="true" />
+          <div className="absolute top-2 right-2 w-6 h-6 border-t border-r border-[rgba(0,212,170,0.15)]" aria-hidden="true" />
+          <div className="absolute bottom-2 left-2 w-6 h-6 border-b border-l border-[rgba(0,212,170,0.15)]" aria-hidden="true" />
+          <div className="absolute bottom-2 right-2 w-6 h-6 border-b border-r border-[rgba(0,212,170,0.15)]" aria-hidden="true" />
+
+          {/* Floating Tags */}
+          {TECHNOLOGIES.map((tech) => (
+            <FloatingTag
+              key={tech.name}
+              tech={tech}
+              containerRef={arenaRef}
+              onDestroy={handleDestroy}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );
