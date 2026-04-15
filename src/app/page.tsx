@@ -1,13 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, lazy, Suspense } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import { SpaceProvider } from "@/lib/space-context";
 import Loader from "@/components/Loader";
-import SpaceScene from "@/components/SpaceScene";
-import SpaceCursor from "@/components/SpaceCursor";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Approche from "@/components/Approche";
@@ -23,12 +21,25 @@ import Footer from "@/components/Footer";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// ── CODE SPLITTING: Heavy 3D components loaded AFTER loader completes ──
+// Three.js (~600KB) is NOT imported until the user sees the loader.
+// This dramatically improves FCP, LCP and TBT.
+const SpaceScene = lazy(() => import("@/components/SpaceScene"));
+const SpaceCursor = lazy(() => import("@/components/SpaceCursor"));
+
 export default function Home() {
   const [loading, setLoading] = useState(true);
+  const [sceneReady, setSceneReady] = useState(false);
   const lenisRef = useRef<Lenis | null>(null);
 
   const handleLoaderComplete = useCallback(() => {
     setLoading(false);
+    // Defer scene mount to next idle frame → avoids blocking main thread
+    if ("requestIdleCallback" in window) {
+      requestIdleCallback(() => setSceneReady(true), { timeout: 200 });
+    } else {
+      setTimeout(() => setSceneReady(true), 50);
+    }
   }, []);
 
   useEffect(() => {
@@ -84,11 +95,19 @@ export default function Home() {
         Aller au contenu principal
       </a>
 
-      {/* 3D Space Background */}
-      <SpaceScene />
+      {/* 3D Space Background — lazy loaded AFTER loader completes */}
+      {sceneReady && (
+        <Suspense fallback={null}>
+          <SpaceScene />
+        </Suspense>
+      )}
 
-      {/* HUD Cursor */}
-      <SpaceCursor />
+      {/* HUD Cursor — lazy loaded */}
+      {sceneReady && (
+        <Suspense fallback={null}>
+          <SpaceCursor />
+        </Suspense>
+      )}
 
       <Navbar />
 

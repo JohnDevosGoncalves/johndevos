@@ -53,7 +53,10 @@ export default function SpaceScene() {
     if (prefersReducedMotion) return;
 
     const container = containerRef.current;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // Cap DPR aggressively on mobile for performance
+    const dpr = isMobile
+      ? Math.min(window.devicePixelRatio || 1, 1.5)
+      : Math.min(window.devicePixelRatio || 1, 2);
     const starCount = isMobile ? STAR_COUNT_MOBILE : STAR_COUNT;
 
     // ── Renderer ──
@@ -126,51 +129,53 @@ export default function SpaceScene() {
     const stars = new THREE.Points(starGeometry, starMaterial);
     scene.add(stars);
 
-    // ── Nebulae (desktop only) ──
+    // ── Nebulae (desktop only, LAZY LOADED by camera proximity) ──
+    // Instead of creating all nebulae at init (blocks main thread),
+    // we create them on-demand when the camera approaches their zone.
     const nebulaGroups: THREE.Points[] = [];
+    const loadedBiomes = new Set<string>();
+    const BIOME_LOAD_DISTANCE = 800; // units ahead of camera to start loading
 
-    if (!isMobile) {
-      BIOMES.forEach((biome) => {
-        if (biome.isMeteorShower) return; // handle separately
+    function loadBiome(biome: typeof BIOMES[number]) {
+      if (loadedBiomes.has(biome.id) || biome.isMeteorShower) return;
+      loadedBiomes.add(biome.id);
 
-        const count = Math.floor(NEBULA_PARTICLES_PER_BIOME * biome.density);
-        const geo = new THREE.BufferGeometry();
-        const positions = new Float32Array(count * 3);
-        const sizes = new Float32Array(count);
-        const opacities = new Float32Array(count);
+      const count = Math.floor(NEBULA_PARTICLES_PER_BIOME * biome.density);
+      const geo = new THREE.BufferGeometry();
+      const positions = new Float32Array(count * 3);
+      const sizes = new Float32Array(count);
+      const opacities = new Float32Array(count);
+      const zRange = Math.abs(biome.endZ - biome.startZ);
 
-        const zRange = Math.abs(biome.endZ - biome.startZ);
+      for (let i = 0; i < count; i++) {
+        positions[i * 3] = (Math.random() - 0.5) * 500;
+        positions[i * 3 + 1] = (Math.random() - 0.5) * 350;
+        positions[i * 3 + 2] = biome.startZ - Math.random() * zRange;
+        sizes[i] = biome.particleSize * (0.5 + Math.random() * 1.0);
+        opacities[i] = 0.01 + Math.random() * 0.04;
+      }
 
-        for (let i = 0; i < count; i++) {
-          positions[i * 3] = (Math.random() - 0.5) * 500;
-          positions[i * 3 + 1] = (Math.random() - 0.5) * 350;
-          positions[i * 3 + 2] = biome.startZ - Math.random() * zRange;
-          sizes[i] = biome.particleSize * (0.5 + Math.random() * 1.0);
-          opacities[i] = 0.01 + Math.random() * 0.04;
-        }
+      geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+      geo.setAttribute("aSize", new THREE.BufferAttribute(sizes, 1));
+      geo.setAttribute("aOpacity", new THREE.BufferAttribute(opacities, 1));
 
-        geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-        geo.setAttribute("aSize", new THREE.BufferAttribute(sizes, 1));
-        geo.setAttribute("aOpacity", new THREE.BufferAttribute(opacities, 1));
-
-        const mat = new THREE.ShaderMaterial({
-          vertexShader: nebulaVertexShader,
-          fragmentShader: nebulaFragmentShader,
-          uniforms: {
-            uTime: { value: 0 },
-            uPixelRatio: { value: dpr },
-            uCameraZ: { value: 0 },
-            uColor: { value: biome.color.clone() },
-          },
-          transparent: true,
-          depthWrite: false,
-          blending: THREE.AdditiveBlending,
-        });
-
-        const points = new THREE.Points(geo, mat);
-        scene.add(points);
-        nebulaGroups.push(points);
+      const mat = new THREE.ShaderMaterial({
+        vertexShader: nebulaVertexShader,
+        fragmentShader: nebulaFragmentShader,
+        uniforms: {
+          uTime: { value: 0 },
+          uPixelRatio: { value: dpr },
+          uCameraZ: { value: 0 },
+          uColor: { value: biome.color.clone() },
+        },
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
       });
+
+      const points = new THREE.Points(geo, mat);
+      scene.add(points);
+      nebulaGroups.push(points);
     }
 
     // ── Meteor Shower (TechStack zone, desktop only) ──
@@ -298,6 +303,16 @@ export default function SpaceScene() {
 
       // Update uniforms
       starUniforms.uTime.value = elapsed;
+
+      // Lazy-load biomes as camera approaches (desktop only)
+      if (!isMobile) {
+        const camZ = currentCamPos.z;
+        for (const biome of BIOMES) {
+          if (!loadedBiomes.has(biome.id) && camZ < biome.startZ + BIOME_LOAD_DISTANCE) {
+            loadBiome(biome);
+          }
+        }
+      }
 
       // Update nebula uniforms
       nebulaGroups.forEach((ng) => {

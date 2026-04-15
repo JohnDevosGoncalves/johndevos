@@ -7,12 +7,16 @@ import "./globals.css";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
+  preload: true,
 });
 
 const sora = Sora({
   variable: "--font-sora",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["600", "700"],  // Only bold weights needed for headings
+  display: "swap",
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -90,8 +94,66 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${sora.variable} antialiased`}
       >
+        {/* ── CRITICAL: SSR Loader Shell ──
+            This renders IMMEDIATELY in the initial HTML response (before JS hydration).
+            It gives Lighthouse an instant FCP/LCP element.
+            The React Loader component takes over once hydrated, and this fades away.
+        */}
+        <div
+          id="ssr-loader"
+          aria-hidden="true"
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 100000,
+            background: "#06060b",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <div style={{ maxWidth: "32rem", padding: "0 2rem", width: "100%" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem", opacity: 0.4 }}>
+              <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#00d4aa" }} />
+              <span style={{ fontSize: 10, fontFamily: "monospace", textTransform: "uppercase", letterSpacing: "0.25em", color: "#6a6a82" }}>
+                Mission Control — Pre-flight Check
+              </span>
+            </div>
+            <div style={{ fontFamily: "monospace", fontSize: 13, color: "#6a6a82", lineHeight: 1.8 }}>
+              &gt; JDEVOS ORBITAL SYSTEMS v10.2.6
+            </div>
+            <div style={{ marginTop: "1.5rem", height: 2, background: "rgba(255,255,255,0.06)", borderRadius: 999, overflow: "hidden" }}>
+              <div style={{ height: "100%", width: "5%", borderRadius: 999, background: "linear-gradient(90deg, #7c5cfc, #00d4aa)" }} />
+            </div>
+          </div>
+        </div>
+
+        {/* Script to hide SSR loader once React hydrates */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(){
+                var s = document.getElementById('ssr-loader');
+                if(s){
+                  // Remove once React mounts (client component takes over)
+                  var observer = new MutationObserver(function(mutations){
+                    if(document.querySelector('.loader-bg')){
+                      s.style.display='none';
+                      observer.disconnect();
+                    }
+                  });
+                  observer.observe(document.body, {childList:true, subtree:true});
+                  // Fallback: remove after 3s anyway
+                  setTimeout(function(){s.style.display='none';observer.disconnect();},3000);
+                }
+              })();
+            `,
+          }}
+        />
+
         <CursorProvider>
-          {/* SVG Liquid Distortion Filter — used by section transitions */}
+          {/* SVG Liquid Distortion Filter */}
           <svg
             style={{ position: "absolute", width: 0, height: 0 }}
             aria-hidden="true"
