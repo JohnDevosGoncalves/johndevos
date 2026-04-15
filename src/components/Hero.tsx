@@ -145,14 +145,17 @@ export default function Hero() {
           John Devos — Partenaire digital de votre lancement
         </p>
 
-        <h1 className="hero-title font-heading text-[2.5rem] sm:text-5xl md:text-[5.5rem] font-bold leading-[1.05] tracking-[-0.02em] mb-10">
-          <span className="block">
+        <h1
+          className="hero-title font-heading text-[2.5rem] sm:text-5xl md:text-[5.5rem] font-bold leading-[1.05] tracking-[-0.02em] mb-10"
+          aria-label="Lancez votre activité 2x plus vite — avec les bons outils."
+        >
+          <span className="block" aria-hidden="true">
             {renderChars("Lancez votre activité")}
           </span>
-          <span className="block">
+          <span className="block" aria-hidden="true">
             {renderChars("2x plus vite —")}
           </span>
-          <span className="block text-primary-light/90">
+          <span className="block text-primary-light/90" aria-hidden="true">
             {renderChars("avec les bons outils.", "text-primary-light/90")}
           </span>
         </h1>

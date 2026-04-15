@@ -18,6 +18,7 @@ import Expertises from "@/components/Expertises";
 import Faq from "@/components/Faq";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -95,18 +96,22 @@ export default function Home() {
         Aller au contenu principal
       </a>
 
-      {/* 3D Space Background — lazy loaded AFTER loader completes */}
+      {/* 3D Space Background — lazy loaded AFTER loader, error-safe */}
       {sceneReady && (
-        <Suspense fallback={null}>
-          <SpaceScene />
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={null}>
+            <SpaceScene />
+          </Suspense>
+        </ErrorBoundary>
       )}
 
-      {/* HUD Cursor — lazy loaded */}
+      {/* HUD Cursor — lazy loaded, error-safe */}
       {sceneReady && (
-        <Suspense fallback={null}>
-          <SpaceCursor />
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={null}>
+            <SpaceCursor />
+          </Suspense>
+        </ErrorBoundary>
       )}
 
       <Navbar />

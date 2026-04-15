@@ -4,8 +4,20 @@ import { NextRequest, NextResponse } from "next/server";
 const rateLimit = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_MAX = 5;
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+const CLEANUP_INTERVAL_MS = 5 * 60 * 1000; // cleanup every 5 minutes
+let lastCleanup = Date.now();
+
+function cleanupExpiredEntries() {
+  const now = Date.now();
+  if (now - lastCleanup < CLEANUP_INTERVAL_MS) return;
+  lastCleanup = now;
+  for (const [ip, entry] of rateLimit) {
+    if (now > entry.resetAt) rateLimit.delete(ip);
+  }
+}
 
 function isRateLimited(ip: string): boolean {
+  cleanupExpiredEntries();
   const now = Date.now();
   const entry = rateLimit.get(ip);
 

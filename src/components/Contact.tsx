@@ -129,16 +129,22 @@ export default function Contact() {
             </div>
           </div>
 
-          <div className="contact-form">
+          <div className="contact-form" aria-live="polite">
             {submitted ? (
               <div className="py-20">
                 <CheckCircle size={28} className="text-primary-light/80 mb-5" />
                 <h3 className="font-heading text-xl font-semibold mb-2">
                   Message envoyé
                 </h3>
-                <p className="text-muted/80 text-sm">
+                <p className="text-muted/80 text-sm mb-6">
                   Je reviens vers vous très rapidement.
                 </p>
+                <button
+                  onClick={() => { setSubmitted(false); setError(null); }}
+                  className="text-sm text-muted/60 hover:text-primary-light transition-colors underline underline-offset-4 decoration-white/20"
+                >
+                  Envoyer un autre message
+                </button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">

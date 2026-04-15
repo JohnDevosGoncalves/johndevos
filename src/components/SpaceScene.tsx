@@ -96,25 +96,9 @@ export default function SpaceScene() {
 
     const container = containerRef.current;
 
-    // ── Adaptive Quality (runs async, degrades later if needed) ──
+    // ── Adaptive Quality state (applied AFTER geometry is created) ──
     let lowPowerMode = false;
     let targetFps = 60;
-
-    detectLowPower().then((isLow) => {
-      if (isLow) {
-        lowPowerMode = true;
-        targetFps = 30;
-        gsap.ticker.fps(30);
-        // Reduce star count live: hide half by moving off-screen
-        if (starPositions) {
-          for (let i = Math.floor(starCount / 2); i < starCount; i++) {
-            starPositions[i * 3 + 2] = 99999; // move far away
-          }
-          const posAttr = starGeometry.getAttribute("position");
-          if (posAttr) (posAttr as { needsUpdate: boolean }).needsUpdate = true;
-        }
-      }
-    });
 
     // DPR capping
     const dpr = isMobile
@@ -168,6 +152,20 @@ export default function SpaceScene() {
     starGeometry.setAttribute("position", new Float32BufferAttribute(starPositions, 3));
     starGeometry.setAttribute("aSize", new Float32BufferAttribute(starSizes, 1));
     starGeometry.setAttribute("aRandom", new Float32BufferAttribute(starRandoms, 1));
+
+    // ── Adaptive Quality (MUST be after starPositions/starGeometry are created) ──
+    detectLowPower().then((isLow) => {
+      if (isLow) {
+        lowPowerMode = true;
+        targetFps = 30;
+        gsap.ticker.fps(30);
+        for (let i = Math.floor(starCount / 2); i < starCount; i++) {
+          starPositions[i * 3 + 2] = 99999;
+        }
+        const posAttr = starGeometry.getAttribute("position");
+        if (posAttr) (posAttr as { needsUpdate: boolean }).needsUpdate = true;
+      }
+    });
 
     const starUniforms = {
       uTime: { value: 0 },

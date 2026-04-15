@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/og-image.png",
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
         alt: "John Devos — Consultant Digital & Accompagnement sur-mesure",
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
     title: "John Devos — Consultant Digital",
     description:
       "Accompagnement sur-mesure pour les entreprises en lancement. Digitalisation, IA, sites web, SaaS, création visuelle.",
-    images: ["/og-image.png"],
+    images: ["/opengraph-image"],
   },
   other: {
     "geo.region": "FR-CVL",
