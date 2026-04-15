@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Zap, ZapOff } from "lucide-react";
 import Image from "next/image";
 
 const navLinks = [
@@ -18,6 +18,7 @@ export default function Navbar() {
   const [hidden, setHidden] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [ecoMode, setEcoMode] = useState(false);
   const lastScrollY = useRef(0);
 
   useEffect(() => {
@@ -25,7 +26,6 @@ export default function Navbar() {
       const y = window.scrollY;
       setScrolled(y > 50);
 
-      // Hide on scroll down, show on scroll up
       if (y > lastScrollY.current && y > 200) {
         setHidden(true);
       } else {
@@ -33,7 +33,6 @@ export default function Navbar() {
       }
       lastScrollY.current = y;
 
-      // Page scroll progress
       const docH = document.documentElement.scrollHeight - window.innerHeight;
       setScrollProgress(docH > 0 ? y / docH : 0);
     };
@@ -41,6 +40,17 @@ export default function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Toggle Low Power Mode
+  const toggleEcoMode = () => {
+    const newState = !ecoMode;
+    setEcoMode(newState);
+
+    // Dispatch custom event → SpaceScene listens for this
+    window.dispatchEvent(
+      new CustomEvent("space-lowpower-toggle", { detail: { enabled: newState } })
+    );
+  };
 
   return (
     <motion.nav
@@ -68,7 +78,7 @@ export default function Navbar() {
           </span>
         </a>
 
-        {/* Desktop */}
+        {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
             <a
@@ -79,6 +89,31 @@ export default function Navbar() {
               {link.label}
             </a>
           ))}
+
+          {/* ── ECO Mode Toggle (HUD style) ── */}
+          <button
+            onClick={toggleEcoMode}
+            className={`eco-toggle group relative flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[11px] font-mono uppercase tracking-wider transition-all duration-500 ${
+              ecoMode
+                ? "border-primary-light/40 text-primary-light bg-primary-light/[0.08]"
+                : "border-white/[0.08] text-muted/60 hover:text-muted/80 hover:border-white/[0.15]"
+            }`}
+            aria-label={ecoMode ? "Désactiver le mode économie d'énergie" : "Activer le mode économie d'énergie"}
+            aria-pressed={ecoMode}
+            title={ecoMode ? "Mode éco activé — consommation réduite" : "Activer le mode basse consommation"}
+          >
+            {ecoMode ? (
+              <ZapOff size={12} className="text-primary-light" />
+            ) : (
+              <Zap size={12} />
+            )}
+            <span>ECO</span>
+            {/* Active indicator dot */}
+            {ecoMode && (
+              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-primary-light animate-pulse" />
+            )}
+          </button>
+
           <a
             href="#contact"
             data-magnetic="0.15"
@@ -88,15 +123,30 @@ export default function Navbar() {
           </a>
         </div>
 
-        {/* Mobile toggle */}
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden text-foreground/80"
-          aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
-          aria-expanded={mobileOpen}
-        >
-          {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        {/* Mobile: ECO + Menu */}
+        <div className="md:hidden flex items-center gap-3">
+          <button
+            onClick={toggleEcoMode}
+            className={`flex items-center justify-center w-8 h-8 rounded-full border transition-all duration-300 ${
+              ecoMode
+                ? "border-primary-light/40 text-primary-light bg-primary-light/[0.08]"
+                : "border-white/[0.08] text-muted/60"
+            }`}
+            aria-label={ecoMode ? "Désactiver le mode éco" : "Activer le mode éco"}
+            aria-pressed={ecoMode}
+          >
+            {ecoMode ? <ZapOff size={14} /> : <Zap size={14} />}
+          </button>
+
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="text-foreground/80"
+            aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
+            aria-expanded={mobileOpen}
+          >
+            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
 
       {/* Section progress bar */}

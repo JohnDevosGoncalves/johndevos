@@ -325,6 +325,37 @@ export default function SpaceScene() {
     };
     window.addEventListener("space-liftoff", onLiftoff);
 
+    // ── Listen for manual Low Power toggle from Navbar ──
+    const onLowPowerToggle = (e: Event) => {
+      const enabled = (e as CustomEvent).detail?.enabled;
+      if (enabled) {
+        lowPowerMode = true;
+        gsap.ticker.fps(30);
+        // Hide nebulae
+        nebulaGroups.forEach((ng) => { ng.visible = false; });
+        if (meteorPoints) meteorPoints.visible = false;
+        // Halve visible stars
+        for (let i = Math.floor(starCount / 2); i < starCount; i++) {
+          starPositions[i * 3 + 2] = 99999;
+        }
+        const posAttr = starGeometry.getAttribute("position");
+        if (posAttr) (posAttr as { needsUpdate: boolean }).needsUpdate = true;
+      } else {
+        lowPowerMode = false;
+        gsap.ticker.fps(60);
+        // Show nebulae
+        nebulaGroups.forEach((ng) => { ng.visible = true; });
+        if (meteorPoints) meteorPoints.visible = true;
+        // Restore stars
+        for (let i = Math.floor(starCount / 2); i < starCount; i++) {
+          starPositions[i * 3 + 2] = Math.random() * -STAR_SPREAD.z + 200;
+        }
+        const posAttr = starGeometry.getAttribute("position");
+        if (posAttr) (posAttr as { needsUpdate: boolean }).needsUpdate = true;
+      }
+    };
+    window.addEventListener("space-lowpower-toggle", onLowPowerToggle);
+
     // ── Reusable Vector3 (avoid GC pressure) ──
     const _forward = new Vector3();
 
@@ -455,6 +486,7 @@ export default function SpaceScene() {
       gsap.ticker.remove(onTick);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("space-liftoff", onLiftoff);
+      window.removeEventListener("space-lowpower-toggle", onLowPowerToggle);
       document.removeEventListener("visibilitychange", onVisibilityChange);
 
       scene.traverse((obj) => {

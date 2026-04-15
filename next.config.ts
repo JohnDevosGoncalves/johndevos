@@ -43,11 +43,11 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // unsafe-eval needed for Three.js shader compilation
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com", // unsafe-eval: Three.js shaders, unpkg: carbon badge
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: blob:",
-              "connect-src 'self'",
+              "connect-src 'self' https://api.websitecarbon.com",
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",

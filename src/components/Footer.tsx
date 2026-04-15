@@ -3,8 +3,9 @@
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Linkedin, ArrowUp } from "lucide-react";
+import { Linkedin, ArrowUp, Leaf } from "lucide-react";
 import Image from "next/image";
+import Script from "next/script";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -89,7 +90,7 @@ export default function Footer() {
             </div>
           </nav>
 
-          {/* Scroll to top button */}
+          {/* Scroll to top */}
           <button
             onClick={scrollToTop}
             data-magnetic="0.3"
@@ -100,6 +101,28 @@ export default function Footer() {
           </button>
         </div>
 
+        {/* ── Eco-conception banner + Website Carbon Badge ── */}
+        <div className="py-6 border-t border-white/[0.10] mb-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-10">
+            {/* Eco message */}
+            <div className="flex items-start gap-3 max-w-md">
+              <Leaf size={16} className="text-primary-light/70 shrink-0 mt-0.5" />
+              <p className="text-xs text-muted/70 leading-relaxed">
+                <span className="text-foreground/80 font-medium">Code frugal, impact maximal.</span>
+                {" "}Ce site propulse une navigation 3D immersive avec un transfert de données
+                minimal. Un code optimisé, c&apos;est un site plus rapide pour vos utilisateurs,
+                un meilleur taux de conversion, et une empreinte carbone réduite.
+              </p>
+            </div>
+
+            {/* Website Carbon Badge (dark theme) */}
+            <div className="carbon-badge-wrapper shrink-0">
+              <div id="wcb" className="carbonbadge wcb-d" />
+            </div>
+          </div>
+        </div>
+
+        {/* Copyright + legal */}
         <div className="pt-6 border-t border-white/[0.10] flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-muted/70">
             &copy; {new Date().getFullYear()} John Devos
@@ -114,6 +137,12 @@ export default function Footer() {
           </div>
         </div>
       </div>
+
+      {/* Website Carbon Calculator script (loaded defer, non-blocking) */}
+      <Script
+        src="https://unpkg.com/website-carbon-badges@1.1.3/b.min.js"
+        strategy="lazyOnload"
+      />
     </footer>
   );
 }
