@@ -206,57 +206,119 @@ h1, h2, h3, h4, h5, h6 {
   opacity: 0.3;
 }
 
-/* ─── Loader ─── */
-.loader-screen {
-  position: fixed;
+/* ─── Space Loader — HUD Terminal ─── */
+.loader-bg {
+  background: var(--color-background);
+}
+
+.loader-hud-screen {
+  transform-origin: center center;
+}
+
+/* Scanline overlay */
+.loader-scanline {
+  position: absolute;
   inset: 0;
-  z-index: 100000;
-  background: var(--color-background);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.25rem;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 212, 170, 0.015) 2px,
+    rgba(0, 212, 170, 0.015) 4px
+  );
+  z-index: 1;
 }
 
-.loader-panel {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 50%;
-  background: var(--color-background);
-  z-index: 100001;
-  will-change: transform;
+/* Terminal line typed reveal */
+.loader-terminal-line {
+  animation: terminalReveal 0.15s ease-out both;
+  font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
 }
 
-.loader-panel--left {
-  left: 0;
+@keyframes terminalReveal {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
-.loader-panel--right {
-  right: 0;
+/* Blinking cursor */
+.loader-blink {
+  animation: blinkCursor 0.6s steps(1) infinite;
 }
 
-.loader-word {
-  font-family: var(--font-heading), system-ui, sans-serif;
-  font-size: clamp(1.5rem, 4vw, 3rem);
-  font-weight: 700;
-  color: var(--color-muted);
-  letter-spacing: -0.02em;
-  will-change: clip-path;
+@keyframes blinkCursor {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
 }
 
-.loader-word--accent {
-  color: var(--color-primary-light);
-}
-
-.loader-progress {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 2px;
+/* Energy bar gradient */
+.loader-energy-bar {
   background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
-  will-change: width;
+  box-shadow: 0 0 12px rgba(0, 212, 170, 0.3);
+}
+
+/* Countdown number */
+.loader-countdown {
+  font-size: clamp(6rem, 20vw, 14rem);
+  line-height: 1;
+  opacity: 0;
+  animation: countdownPulse 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  text-shadow: 0 0 60px rgba(124, 92, 252, 0.4), 0 0 120px rgba(124, 92, 252, 0.15);
+}
+
+@keyframes countdownPulse {
+  0% {
+    opacity: 0;
+    transform: scale(2.5);
+    filter: blur(8px);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+  80% {
+    opacity: 1;
+    transform: scale(0.98);
+  }
+  100% {
+    opacity: 0.15;
+    transform: scale(0.95);
+    filter: blur(2px);
+  }
+}
+
+/* LIFTOFF text */
+.loader-liftoff {
+  font-size: clamp(2rem, 8vw, 5rem);
+  line-height: 1;
+  opacity: 0;
+  animation: liftoffReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  text-shadow: 0 0 40px rgba(0, 212, 170, 0.5), 0 0 80px rgba(0, 212, 170, 0.2);
+}
+
+@keyframes liftoffReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+    filter: blur(6px);
+    letter-spacing: 0.6em;
+  }
+  50% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    letter-spacing: 0.3em;
+  }
 }
 
 /* ─── Marquee ─── */

@@ -224,6 +224,35 @@ export default function SpaceScene() {
     const currentCamPos = new THREE.Vector3();
     let currentLookAtLerp = new THREE.Vector3();
     let initialized = false;
+    let liftoffWarp = 0; // Extra warp from liftoff event (0→1→0)
+
+    // Listen for liftoff event from Loader
+    const onLiftoff = () => {
+      // Spike warp to max, then ease down over 2 seconds
+      gsap.fromTo(
+        { value: 0 },
+        { value: 1 },
+        {
+          value: 1,
+          duration: 0.3,
+          ease: "power4.in",
+          onUpdate: function () {
+            liftoffWarp = this.targets()[0].value;
+          },
+          onComplete: () => {
+            gsap.to({ value: 1 }, {
+              value: 0,
+              duration: 1.8,
+              ease: "power2.out",
+              onUpdate: function () {
+                liftoffWarp = this.targets()[0].value;
+              },
+            });
+          },
+        }
+      );
+    };
+    window.addEventListener("space-liftoff", onLiftoff);
 
     // ── GSAP Ticker (synced with Lenis) ──
     const onTick = (time: number) => {
@@ -238,9 +267,10 @@ export default function SpaceScene() {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       const progress = maxScroll > 0 ? Math.max(0, Math.min(1, scrollY / maxScroll)) : 0;
 
-      // Compute scroll velocity → warp factor
+      // Compute scroll velocity → warp factor (+ liftoff burst)
       const velocity = Math.abs(progress - lastProgress) / Math.max(dt, 0.001);
-      const warpTarget = Math.min(1.0, velocity * WARP_SENSITIVITY);
+      const scrollWarp = Math.min(1.0, velocity * WARP_SENSITIVITY);
+      const warpTarget = Math.min(1.0, Math.max(scrollWarp, liftoffWarp));
       const currentWarp = starUniforms.uWarpFactor.value;
       starUniforms.uWarpFactor.value += (warpTarget - currentWarp) * WARP_LERP;
       lastProgress = progress;
@@ -325,6 +355,7 @@ export default function SpaceScene() {
     return () => {
       gsap.ticker.remove(onTick);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("space-liftoff", onLiftoff);
 
       // Dispose everything
       scene.traverse((obj) => {
