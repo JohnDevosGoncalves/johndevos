@@ -97,24 +97,27 @@ function FloatingTag({
     startRoaming();
 
     return () => {
-      if (tweenRef.current) tweenRef.current.kill();
+      // Kill ALL tweens on this element (not just the stored ref)
+      if (tagRef.current) gsap.killTweensOf(tagRef.current);
+      tweenRef.current = null;
     };
   }, [startRoaming]);
 
-  // Handle click → destroy
-  const handleClick = () => {
+  // Handle click → destroy (FIRST click = instant kill, no position jump)
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     const tag = tagRef.current;
     if (!tag || isDestroyed.current) return;
     isDestroyed.current = true;
 
-    // Stop movement
-    if (tweenRef.current) tweenRef.current.kill();
+    // ── CRITICAL: Kill ALL tweens on this element IMMEDIATELY ──
+    // This freezes the tag at its current GSAP-computed x/y position.
+    // Using killTweensOf (not tweenRef.kill) ensures no residual tweens.
+    gsap.killTweensOf(tag);
+    tweenRef.current = null;
 
-    // Award points
-    onDestroy(tech.score);
-
-    // ── DISINTEGRATION ANIMATION ──
-    // Create fragment particles from the tag
+    // ── Capture position BEFORE any DOM changes ──
+    // getBoundingClientRect reads the rendered position (post-GSAP transforms)
     const rect = tag.getBoundingClientRect();
     const parentRect = tag.parentElement?.getBoundingClientRect();
     if (!parentRect) return;
@@ -122,8 +125,12 @@ function FloatingTag({
     const cx = rect.left - parentRect.left + rect.width / 2;
     const cy = rect.top - parentRect.top + rect.height / 2;
 
-    // Hide original tag
-    gsap.to(tag, { opacity: 0, scale: 0.5, duration: 0.15 });
+    // Award points
+    onDestroy(tech.score);
+
+    // ── DISINTEGRATION: animate from CURRENT position, no x/y reset ──
+    // Use overwrite: true to prevent any queued/conflicting tweens
+    gsap.to(tag, { opacity: 0, scale: 0.5, duration: 0.15, overwrite: true });
 
     // Create 8 fragment particles
     const fragmentCount = 8;
@@ -171,20 +178,26 @@ function FloatingTag({
     const respawnDelay = 3000 + Math.random() * 2000;
     setTimeout(() => {
       if (!tag || !tag.parentElement) return;
-      isDestroyed.current = false;
 
       const container = containerRef.current;
       if (!container) return;
+
+      // Kill any lingering tweens before respawn
+      gsap.killTweensOf(tag);
+      isDestroyed.current = false;
+
       const containerRect = container.getBoundingClientRect();
       const newX = (Math.random() - 0.5) * containerRect.width * 0.6;
       const newY = (Math.random() - 0.5) * containerRect.height * 0.6;
 
+      // Set position cleanly, then animate in
       gsap.set(tag, { x: newX, y: newY, scale: 0, opacity: 0 });
       gsap.to(tag, {
         scale: 1,
         opacity: 1,
         duration: 0.4,
         ease: "back.out(2)",
+        overwrite: true,
         onComplete: startRoaming,
       });
     }, respawnDelay);
