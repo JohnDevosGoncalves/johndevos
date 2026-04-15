@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Resend } from "resend";
 
 // In-memory rate limiting (per IP, resets on deploy — sufficient for a showcase site)
 const rateLimit = new Map<string, { count: number; resetAt: number }>();
@@ -115,9 +116,51 @@ export async function POST(request: NextRequest) {
     submittedAt: new Date().toISOString(),
   };
 
-  // TODO: Replace with your email service (Resend, SendGrid, Nodemailer, etc.)
-  if (process.env.NODE_ENV === "development") {
-    console.log("[contact]", JSON.stringify(sanitizedData, null, 2));
+  // ── Send email via Resend ──
+  const apiKey = process.env.RESEND_API_KEY;
+  const contactEmail = process.env.CONTACT_EMAIL || "contact@johndevos.fr";
+
+  if (!apiKey) {
+    console.error("[contact] RESEND_API_KEY is not set");
+    // In dev, log instead of failing
+    if (process.env.NODE_ENV === "development") {
+      console.log("[contact] DEV MODE — email would be:", JSON.stringify(sanitizedData, null, 2));
+      return NextResponse.json({ success: true });
+    }
+    return NextResponse.json(
+      { error: "Service temporairement indisponible." },
+      { status: 500 }
+    );
+  }
+
+  try {
+    const resend = new Resend(apiKey);
+
+    await resend.emails.send({
+      from: "Site johndevos.fr <onboarding@resend.dev>",
+      to: contactEmail,
+      replyTo: sanitizedData.email,
+      subject: `Nouveau contact : ${sanitizedData.name}${sanitizedData.company ? ` (${sanitizedData.company})` : ""}`,
+      text: [
+        `Nom : ${sanitizedData.name}`,
+        `Email : ${sanitizedData.email}`,
+        sanitizedData.company ? `Entreprise : ${sanitizedData.company}` : null,
+        ``,
+        `Message :`,
+        sanitizedData.message,
+        ``,
+        `---`,
+        `Envoyé depuis johndevos.fr le ${sanitizedData.submittedAt}`,
+      ]
+        .filter(Boolean)
+        .join("\n"),
+    });
+  } catch (err) {
+    console.error("[contact] Resend error:", err);
+    return NextResponse.json(
+      { error: "Impossible d'envoyer le message. Réessayez." },
+      { status: 500 }
+    );
   }
 
   return NextResponse.json({ success: true });
