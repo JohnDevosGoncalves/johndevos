@@ -529,6 +529,169 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-backdrop-filter: blur(8px);
 }
 
+/* ─── HOLOGRAM HUD: Alert Mode (Approche — "Problème") ─── */
+.holo-alert {
+  position: relative;
+  background: rgba(255, 122, 92, 0.03);
+  border: 1px solid rgba(255, 122, 92, 0.15);
+  border-radius: 1rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  overflow: hidden;
+}
+
+/* Scanline overlay for CRT effect */
+.holo-alert::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 122, 92, 0.02) 2px,
+    rgba(255, 122, 92, 0.02) 4px
+  );
+  z-index: 1;
+}
+
+/* Top edge glow line */
+.holo-alert::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 122, 92, 0.4), transparent);
+  z-index: 2;
+}
+
+.holo-alert-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.625rem;
+  font-size: 10px;
+  font-family: monospace;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #ff7a5c;
+  border: 1px solid rgba(255, 122, 92, 0.25);
+  border-radius: 999px;
+  background: rgba(255, 122, 92, 0.06);
+  animation: holoPulse 3s ease-in-out infinite;
+}
+
+@keyframes holoPulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+.holo-alert-title {
+  color: #ff7a5c;
+  text-shadow: 0 0 20px rgba(255, 122, 92, 0.25);
+}
+
+.holo-alert-text {
+  color: rgba(255, 122, 92, 0.7);
+}
+
+/* Glitch flicker on the badge dot */
+.holo-dot-alert {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ff7a5c;
+  box-shadow: 0 0 6px #ff7a5c;
+  animation: holoDotBlink 2s steps(1) infinite;
+}
+
+@keyframes holoDotBlink {
+  0%, 45% { opacity: 1; }
+  46%, 55% { opacity: 0.2; }
+  56%, 100% { opacity: 1; }
+}
+
+/* Scan reveal animation */
+.holo-scan-reveal {
+  clip-path: inset(100% 0 0 0);
+}
+
+/* ─── HOLOGRAM HUD: Resolution Mode (Expertises — "Services") ─── */
+.holo-resolve {
+  position: relative;
+  background: rgba(0, 212, 170, 0.02);
+  border: 1px solid rgba(0, 212, 170, 0.12);
+  border-radius: 0.875rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  overflow: hidden;
+  transition: border-color 0.4s ease, background 0.4s ease, box-shadow 0.4s ease;
+}
+
+.holo-resolve:hover {
+  border-color: rgba(0, 212, 170, 0.25);
+  background: rgba(0, 212, 170, 0.04);
+  box-shadow: 0 0 30px rgba(0, 212, 170, 0.06), inset 0 0 30px rgba(0, 212, 170, 0.02);
+}
+
+/* Top edge glow line */
+.holo-resolve::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 15%;
+  right: 15%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 212, 170, 0.3), transparent);
+  z-index: 1;
+}
+
+.holo-resolve-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.625rem;
+  font-size: 10px;
+  font-family: monospace;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #00d4aa;
+  border: 1px solid rgba(0, 212, 170, 0.2);
+  border-radius: 999px;
+  background: rgba(0, 212, 170, 0.06);
+}
+
+.holo-dot-resolve {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00d4aa;
+  box-shadow: 0 0 6px #00d4aa;
+}
+
+.holo-resolve-title {
+  color: #00d4aa;
+  text-shadow: 0 0 15px rgba(0, 212, 170, 0.2);
+}
+
+.holo-resolve-num {
+  font-family: monospace;
+  font-size: 11px;
+  color: rgba(0, 212, 170, 0.4);
+  letter-spacing: 0.1em;
+}
+
+/* Data decrypt animation for text lines */
+.holo-line {
+  opacity: 0;
+  transform: translateX(10px);
+}
+
 /* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
