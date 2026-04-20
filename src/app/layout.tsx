@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Sora } from "next/font/google";
+import Script from "next/script";
 import { LocalBusinessJsonLd, FaqJsonLd, WebSiteJsonLd } from "@/components/JsonLd";
 import { CursorProvider } from "@/lib/cursor-context";
 import "./globals.css";
@@ -90,6 +91,33 @@ export default function RootLayout({
         <LocalBusinessJsonLd />
         <FaqJsonLd />
         <WebSiteJsonLd />
+        {/* Axeptio - Consent Management Platform (GDPR) */}
+        <Script
+          id="axeptio-settings"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.axeptioSettings = {
+                clientId: "69df5d278557a718196a22aa",
+                cookiesVersion: "fr-eu-gpdr-15-04-2026",
+                googleConsentMode: {
+                  default: {
+                    analytics_storage: "denied",
+                    ad_storage: "denied",
+                    ad_user_data: "denied",
+                    ad_personalization: "denied",
+                    wait_for_update: 500
+                  }
+                }
+              };
+              (function(d, s) {
+                var t = d.getElementsByTagName(s)[0], e = d.createElement(s);
+                e.async = true; e.src = "//static.axept.io/sdk.js";
+                t.parentNode.insertBefore(e, t);
+              })(document, "script");
+            `,
+          }}
+        />
       </head>
       <body
         className={`${inter.variable} ${sora.variable} antialiased`}
